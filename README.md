@@ -11,7 +11,11 @@ Include wellidate in the page. Then initialize wellidate instance and call the `
 ```html
 <html>
     <body>
-        ...
+        <form>
+            <input required>
+
+            <button>Submit</button>
+        </form>
 
         <script src="/scripts/wellidate.js"></script>
         <script>
