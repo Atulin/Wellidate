@@ -1,2 +1,6 @@
-layout: default
-title: Wellidate - Javascript element validator
+defaults:
+  -
+    scope:
+      path: ""
+    values:
+      layout: "default"
