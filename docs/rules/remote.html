@@ -1,0 +1,124 @@
+---
+title: Wellidate - remote rule
+---
+<div class="widget code">
+    <div class="widget-header">
+        <div class="fa fa-code"></div>
+        <span>Wellidate - remote rule</span>
+    </div>
+    <div class="widget-content">
+        <div class="row">
+            <div class="col-12">
+                <form method="post">
+<pre class="mb-1">
+<code>
+<div class="input-group mb-1 col-3">
+    <input class="form-control" name="username" data-val-remote="" data-val-remote-url="is-unique?username=">
+    <div class="input-group-append">
+        <button class="input-group-text btn-success">Submit</button>
+    </div>
+</div>
+<span data-valmsg-for="username"></span>
+</code>
+</pre>
+                </form>
+<pre class="mb-1">
+<code>
+<strong>HTML options</strong>
+
+1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-remote</span>="" <span class="attr">data-val-remote-url</span>="is-unique?username="&gt;</span>
+2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-remote</span>="Message" <span class="attr">data-val-remote-url</span>="is-unique?username="&gt;</span>
+3) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username"&gt;</span>
+4) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username"&gt;</span>
+
+<span class="html">&lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>=&quot;username&quot;&gt;&lt;/<span class="tag">span</span>&gt;</span>
+</code>
+</pre>
+<pre>
+<code>
+<strong>JS initialization</strong>
+
+<span class="com">// Any input, input container or form.</span>
+<span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
+
+1-2) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form);
+7) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="str">'input'</span>: {
+            regex: {
+                pattern: <span class="str">'is-unique?username='</span>
+            }
+        }
+    }
+  });
+8) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="com">// Required, any valid document selector for which to apply the rules.</span>
+        <span class="str">'input'</span>: {
+            remote: {
+                <span class="com">// Required, remote validation url.</span>
+                url: <span class="str">'is-unique?username='</span>,
+                <span class="com">// Optional, trim value before validating.</span>
+                trim: <span class="kwd">true</span>,
+                <span class="com">// Optional, failed validation message.</span>
+                message: <span class="str">'Please fix this field.'</span>,
+                <span class="com">// Optional, format message in desired format.</span>
+                formatMessage: <span class="kwd">function</span> () {
+                    <span class="kwd">return this</span>.message;
+                },
+                <span class="com">// Optional, filter enabled when function.</span>
+                isEnabled: <span class="kwd">function</span> () {
+                    <span class="kwd">return true</span>;
+                },
+                <span class="com">// Optional, override validation.</span>
+                isValid: <span class="kwd">function</span> (validatable) {
+                    <span class="kwd">var</span> remote = <span class="kwd">this</span>;
+                    <span class="kwd">if</span> (remote.request && remote.request.readyState != 4) {
+                        remote.request.abort();
+                    }
+
+                    clearTimeout(remote.start);
+                    remote.start = setTimeout(<span class="kwd">function</span> () {
+                        <span class="kwd">if</span> (validatable.isValid) {
+                            remote.request = <span class="kwd">new</span> XMLHttpRequest();
+                            remote.request.open(remote.type, remote.url + remote.element.value, <span class="kwd">true</span>);
+                            remote.request.setRequestHeader(<span class="str">'X-Requested-With'</span>, <span class="str">'XMLHttpRequest'</span>);
+
+                            remote.request.onload = <span class="kwd">function</span> () {
+                                <span class="kwd">if</span> (<span class="num">200</span> <= <span class="kwd">this</span>.status && <span class="kwd">this</span>.status < <span class="num">400</span>) {
+                                    remote.apply(validatable, <span class="kwd">this</span>.responseText);
+                                }
+                            };
+
+                            remote.request.send();
+
+                            validatable.pending();
+                        }
+                    }, <span class="num">1</span>);
+
+                    <span class="kwd">return true</span>;
+                },
+                <span class="com">// Optional, override value normalization for the rule.</span>
+                normalizeValue: <span class="kwd">function</span> () {
+                    <span class="kwd">return this</span>.trim ? <span class="kwd">this</span>.element.value.trim() : <span class="kwd">this</span>.element.value;
+                },
+                <span class="com">// Optional, override remote response processing.</span>
+                apply: <span class="kwd">function</span> (validatable, response) {
+                    <span class="kwd">var</span> result = <span class="cls">JSON</span>.parse(response);
+
+                    <span class="kwd">if</span> (result.isValid) {
+                        validatable.success(result.message);
+                    } <span class="kwd">else</span> {
+                        validatable.error(<span class="str">'remote'</span>, result.message);
+                    }
+                }
+            }
+        }
+    }
+  });
+</code>
+</pre>
+            </div>
+        </div>
+    </div>
+</div>

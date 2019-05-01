@@ -1,0 +1,108 @@
+---
+title: Wellidate - accept rule
+---
+<div class="widget code">
+    <div class="widget-header">
+        <div class="fa fa-code"></div>
+        <span>Wellidate - accept rule</span>
+    </div>
+    <div class="widget-content">
+        <div class="row">
+            <div class="col-12">
+                <form method="post">
+<pre class="mb-1">
+<code>
+<div class="input-group mb-1 col-3">
+    <input class="form-control" name="files" type="file" accept=".dat,audio/mp3,text/*" multiple data-val-accept="" data-val-accept-types=".dat,audio/mp3,text/*">
+    <div class="input-group-append">
+        <button class="input-group-text btn-success">Submit</button>
+    </div>
+</div>
+<span data-valmsg-for="files"></span>
+</code>
+</pre>
+                </form>
+<pre class="mb-1">
+<code>
+<strong>HTML options</strong>
+
+1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="files" <span class="attr">type</span>="file" <span class="attr">multiple</span> <span class="attr">data-val-accept</span>="" <span class="attr">data-val-accept-types</span>=".dat,audio/mp3,text/*"&gt;</span>
+2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="files" <span class="attr">type</span>="file" <span class="attr">multiple</span> <span class="attr">data-val-accept</span>="Message" <span class="attr">data-val-accept-types</span>=".dat,audio/mp3,text/*"&gt;</span>
+3) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="files" <span class="attr">type</span>="file" <span class="attr">multiple</span>&gt;</span>
+4) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="files" <span class="attr">type</span>="file" <span class="attr">multiple</span>&gt;</span>
+
+<span class="html">&lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>=&quot;files&quot;&gt;&lt;/<span class="tag">span</span>&gt;</span>
+</code>
+</pre>
+<pre>
+<code>
+<strong>JS initialization</strong>
+
+<span class="com">// Any input, input container or form.</span>
+<span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
+
+1-2) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form);
+3) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="str">'input'</span>: {
+            accept: {
+                types: <span class="str">'.dat,audio/mp3,text/*'</span>
+            }
+        }
+    }
+  });
+4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="com">// Required, any valid document selector for which to apply the rules.</span>
+        <span class="str">'input'</span>: {
+            accept: {
+                <span class="com">// Required, file extensions or their mime types separated by commas.</span>
+                types: <span class="str">'.dat,audio/mp3,text/*'</span>,
+                <span class="com">// Optional, failed validation message.</span>
+                message: <span class="str">'Please select files in correct format.'</span>,
+                <span class="com">// Optional, format message in desired format.</span>
+                formatMessage: <span class="kwd">function</span> () {
+                    <span class="kwd">return this</span>.message;
+                },
+                <span class="com">// Optional, filter enabled when function.</span>
+                isEnabled: <span class="kwd">function</span> () {
+                    <span class="kwd">return true</span>;
+                },
+                <span class="com">// Optional, override validation.</span>
+                isValid: <span class="kwd">function</span> () {
+                    <span class="kwd">var</span> filter = <span class="kwd">this</span>.types.split(<span class="str">','</span>).map(<span class="kwd">function</span> (type) {
+                        <span class="kwd">return</span> type.trim();
+                    });
+
+                    <span class="kwd">var</span> correct = [].filter.call(<span class="kwd">this</span>.element.files, <span class="kwd">function</span> (file) {
+                        <span class="kwd">var</span> extension = file.name.split(<span class="str">'.'</span>).pop();
+
+                        <span class="kwd">for</span> (<span class="kwd">var</span> i = <span class="num">0</span>; i < filter.length; i++) {
+                            <span class="kwd">if</span> (filter[i].indexOf(<span class="str">'.'</span>) == <span class="num">0</span>) {
+                                <span class="kwd">if</span> (file.name != extension && <span class="str">'.'</span> + extension == filter[i]) {
+                                    <span class="kwd">return true</span>;
+                                }
+                            } <span class="kwd">else</span> {
+                                <span class="kwd">if</span> (<span class="str">/\/\*$/</span>.test(filter[i])) {
+                                    <span class="kwd">if</span> (file.type.indexOf(filter[i].replace(<span class="str">/\*$/</span>, <span class="str">''</span>)) == <span class="num">0</span>) {
+                                        <span class="kwd">return true</span>;
+                                    }
+                                } <span class="kwd">else if</span> (file.type == filter[i]) {
+                                    <span class="kwd">return true</span>;
+                                }
+                            }
+                        }
+                    });
+
+                    <span class="kwd">return this</span>.element.files.length == correct.length;
+                }
+            }
+        }
+    }
+  });
+</code>
+</pre>
+            </div>
+        </div>
+    </div>
+</div>

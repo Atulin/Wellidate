@@ -1,0 +1,29 @@
+{
+  "name": "wellidate",
+  "version": "1.0.0",
+  "description": "Client side javascript validation library",
+  "main": "src/wellidate.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NonFactors/Wellidate.git"
+  },
+  "keywords": [
+    "validation",
+    "validate"
+  ],
+  "author": "NonFactors",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/NonFactors/Wellidate/issues"
+  },
+  "files": [
+    "src/wellidate.js"
+  ],
+  "homepage": "https://github.com/NonFactors/Wellidate#readme"
+}

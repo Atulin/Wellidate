@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>{{ page.title }}</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet" type="text/css">
+
+    <link href="/Wellidate/styles/font-awesome.css" rel="stylesheet">
+    <link href="/Wellidate/styles/bootstrap.css" rel="stylesheet">
+    <link href="/Wellidate/styles/base.css" rel="stylesheet">
+</head>
+<body class="container-fluid">
+    <div class="row">
+        <div class="sidebar col-lg-2">
+            <div class="logo">
+                <a href="https://github.com/NonFactors/MVC6.Grid">
+                    <span class="fa fa-github">
+                        <span class="version">v1.0.0</span>
+                    </span>
+                </a>
+            </div>
+            <input id="SearchInput" class="sidebar-search" placeholder="Search...">
+            <ul>
+                <li>
+                    <a href="/Wellidate/">Quick start</a>
+                </li>
+                <li>
+                    <a href="/Wellidate/installation">Installation</a>
+                </li>
+            </ul>
+            <ul>
+                <li>
+                    <a href="/Wellidate/rules">Rules</a>
+                </li>
+                <li>
+                    <a href="/Wellidate/api">API</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-12 col-lg-10">
+            {{ content }}
+        </div>
+    </div>
+
+    <script src="/Wellidate/scripts/wellidate.js"></script>
+    <script src="/Wellidate/scripts/site.js"></script>
+</body>
+</html>

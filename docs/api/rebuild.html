@@ -1,0 +1,118 @@
+---
+title: Wellidate - rebuild method
+---
+<div class="row">
+    <div class="col-12">
+        <div class="widget example">
+            <div class="widget-header">
+                <div class="fa fa-bars"></div>
+                <span>Wellidate - rebuild method</span>
+            </div>
+            <div class="widget-content">
+                <form class="form" method="post">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="name">Name</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input class="form-control" name="name" required maxlength="10">
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="name"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="surname">Surname</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input class="form-control" name="surname" required minlength="2" maxlength="10">
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="surname"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div id="birthday-label" class="col-12">
+                            <label class="form-control-label" for="birthday">Birthday</label>
+                        </div>
+                        <div id="birthday-control" class="col-lg-6">
+                            <input id="birthday" type="date" class="form-control" name="birthday" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="birthday"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3">
+                            <label id="check-result"></label>
+                        </div>
+                        <div class="col-3 text-right">
+                            <button class="btn btn-default toggle" type="button">Toggle birthday</button>
+                            <button class="btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="widget code">
+            <div class="widget-header">
+                <div class="fa fa-code"></div>
+                <span>Javascript</span>
+            </div>
+            <div class="widget-content">
+<pre class="mb-1">
+<code>
+<span class="com">Rebuilds wellidate instance to add or remove any dynamic elements in the container.</span>
+rebuild(): <span class="kwd">void</span>
+</code>
+</pre>
+<pre>
+<code>
+document.querySelector(<span class="str">'form'</span>).addEventListener(<span class="str">'click'</span>, <span class="kwd">function</span> (e) {
+    <span class="kwd">if</span> (e.target.classList.contains(<span class="str">'toggle'</span>)) {
+        addOrRemoveFields();
+
+        <span class="kwd">new</span> <span class="cls">Wellidate</span>(<span class="kwd">this</span>).rebuild();
+    }
+});
+</code>
+</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('form').addEventListener('click', function (e) {
+        if (e.target.classList.contains('toggle')) {
+            var wellidate = new Wellidate(this);
+            var birthday = document.getElementById('birthday');
+            var label = document.getElementById('birthday-label');
+
+            if (birthday) {
+                wellidate.reset();
+
+                label.style.display = 'none';
+                birthday.parentElement.removeChild(birthday);
+            } else {
+                birthday = document.createElement('input');
+                birthday.className = 'form-control';
+                birthday.name = 'birthday';
+                birthday.required = true;
+                birthday.id = 'birthday';
+                birthday.type = 'date';
+
+                label.style.display = '';
+                document.getElementById('birthday-control').appendChild(birthday);
+            }
+
+            wellidate.rebuild();
+        }
+    });
+</script>

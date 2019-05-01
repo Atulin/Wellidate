@@ -1,0 +1,41 @@
+<div class="widget docs">
+    <div class="widget-header">
+        <div class="fa fa-info"></div>
+        <span>Installation steps</span>
+        <div class="widget-buttons">
+            <span class="fa fa-minus content-toggle"></span>
+        </div>
+    </div>
+    <div class="widget-content">
+        <p>
+            Install wellidate package from npm.
+        </p>
+        <pre>> npm i wellidate</pre>
+        <p>
+            Include wellidate scripts to your project and your page.
+        </p>
+        <pre>
+&lt;html&gt;
+    &lt;body&gt;
+<b class="install-note">+       &lt;script src="/scripts/wellidate.js"&gt;&lt;/script&gt;</b>
+    &lt;/body&gt;
+&lt;/html&gt;</pre>
+        <p>
+            Initialize Wellidate instances after rendering html
+        </p>
+        <pre>
+&lt;html&gt;
+    &lt;body&gt;
+        ...
+
+        &lt;script src="/scripts/wellidate.js"&gt;&lt;/script&gt;
+        &lt;script&gt;
+<b class="install-note">+           [].forEach.call(document.getElementsByTagName('form'), function (form) {
++               new Wellidate(form);
++           });</b>
+        &lt;/script&gt;
+    &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+    </div>
+</div>

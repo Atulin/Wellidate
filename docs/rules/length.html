@@ -1,0 +1,95 @@
+---
+title: Wellidate - length rule
+---
+<div class="widget code">
+    <div class="widget-header">
+        <div class="fa fa-code"></div>
+        <span>Wellidate - length rule</span>
+    </div>
+    <div class="widget-content">
+        <div class="row">
+            <div class="col-12">
+                <form method="post">
+<pre class="mb-1">
+<code>
+<div class="input-group mb-1 col-3">
+    <input class="form-control" name="username" data-val-length="" data-val-length-min="2" data-val-length-max="10">
+    <div class="input-group-append">
+        <button class="input-group-text btn-success">Submit</button>
+    </div>
+</div>
+<span data-valmsg-for="username"></span>
+</code>
+</pre>
+                </form>
+<pre class="mb-1">
+<code>
+<strong>HTML options</strong>
+
+1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-length</span>="" <span class="attr">data-val-length-min</span>="2" <span class="attr">data-val-length-max</span>="10"&gt;</span>
+2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-length</span>="Message" <span class="attr">data-val-length-min</span>="2" <span class="attr">data-val-length-max</span>="10"&gt;</span>
+3) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username"&gt;</span>
+4) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username"&gt;</span>
+
+<span class="html">&lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>=&quot;username&quot;&gt;&lt;/<span class="tag">span</span>&gt;</span>
+</code>
+</pre>
+<pre>
+<code>
+<strong>JS initialization</strong>
+
+<span class="com">// Any input, input container or form.</span>
+<span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
+
+1-2) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form);
+3) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="str">'input'</span>: {
+            length: {
+                min: <span class="num">2</span>,
+                max: <span class="num">10</span>
+            }
+        }
+    }
+  });
+4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="com">// Required, any valid document selector for which to apply the rules.</span>
+        <span class="str">'input'</span>: {
+            length: {
+                <span class="com">// Semi required, minimum number of characters that should be entered, can be ommited if max value is specified.</span>
+                min: <span class="num">2</span>,
+                <span class="com">// Semi required, maximum number of characters that can be entered, can be ommited if min value is specified.</span>
+                max: <span class="num">10</span>,
+                <span class="com">// Optional, trim value before validating.</span>
+                trim: <span class="kwd">true</span>,
+                <span class="com">// Optional, failed validation message.</span>
+                message: <span class="str">'Please enter a value between {0} and {1} characters long.'</span>,
+                <span class="com">// Optional, format message in desired format.</span>
+                formatMessage: <span class="kwd">function</span> () {
+                    <span class="kwd">return this</span>.message.replace(<span class="str">'{0}'</span>, <span class="kwd">this</span>.min).replace(<span class="str">'{1}'</span>, <span class="kwd">this</span>.max);
+                },
+                <span class="com">// Optional, filter enabled when function.</span>
+                isEnabled: <span class="kwd">function</span> () {
+                    <span class="kwd">return true</span>;
+                },
+                <span class="com">// Optional, override validation.</span>
+                isValid: <span class="kwd">function</span> () {
+                    <span class="kwd">var</span> value = <span class="kwd">this</span>.normalizeValue();
+
+                    <span class="kwd">return</span> (<span class="kwd">this</span>.min == <span class="kwd">null</span> || <span class="kwd">this</span>.min <= value.length) && (value.length <= <span class="kwd">this</span>.max || <span class="kwd">this</span>.max == <span class="kwd">null</span>);
+                },
+                <span class="com">// Optional, override value normalization for the rule.</span>
+                normalizeValue: <span class="kwd">function</span> () {
+                    <span class="kwd">return this</span>.trim ? <span class="kwd">this</span>.element.value.trim() : <span class="kwd">this</span>.element.value;
+                }
+            }
+        }
+    }
+  });
+</code>
+</pre>
+            </div>
+        </div>
+    </div>
+</div>

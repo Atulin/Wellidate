@@ -1,0 +1,90 @@
+---
+title: Wellidate - filesize rule
+---
+<div class="widget code">
+    <div class="widget-header">
+        <div class="fa fa-code"></div>
+        <span>Wellidate - filesize rule</span>
+    </div>
+    <div class="widget-content">
+        <div class="row">
+            <div class="col-12">
+                <form method="post">
+<pre class="mb-1">
+<code>
+<div class="input-group mb-1 col-3">
+    <input class="form-control" name="files" type="file" multiple data-val-filesize="" data-val-filesize-max="1048576">
+    <div class="input-group-append">
+        <button class="input-group-text btn-success">Submit</button>
+    </div>
+</div>
+<span data-valmsg-for="files"></span>
+</code>
+</pre>
+                </form>
+<pre class="mb-1">
+<code>
+<strong>HTML options</strong>
+
+1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="files" <span class="attr">type</span>="file" <span class="attr">multiple</span> <span class="attr">data-val-filesize</span>="" <span class="attr">data-val-filesize-max</span>="1048576"&gt;</span>
+2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="files" <span class="attr">type</span>="file" <span class="attr">multiple</span> <span class="attr">data-val-filesize</span>="Message" <span class="attr">data-val-filesize-max</span>="1048576"&gt;</span>
+3) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="files" <span class="attr">type</span>="file" <span class="attr">multiple</span>&gt;</span>
+4) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="files" <span class="attr">type</span>="file" <span class="attr">multiple</span>&gt;</span>
+
+<span class="html">&lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>=&quot;files&quot;&gt;&lt;/<span class="tag">span</span>&gt;</span>
+</code>
+</pre>
+<pre>
+<code>
+<strong>JS initialization</strong>
+
+<span class="com">// Any input, input container or form.</span>
+<span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
+
+1-2) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form);
+3) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="str">'input'</span>: {
+            filesize: {
+                max: <span class="num">1048576</span>
+            }
+        }
+    }
+  });
+4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="com">// Required, any valid document selector for which to apply the rules.</span>
+        <span class="str">'input'</span>: {
+            filesize: {
+                <span class="com">// Required, maximum number of bytes all selected files must not exceed.</span>
+                max: <span class="num">1048576</span>,
+                <span class="com">// Optional, bytes per kilobyte size to use when formatting a user friendly message.</span>
+                page: <span class="num">1024</span>,
+                <span class="com">// Optional, failed validation message.</span>
+                message: <span class="str">'File size should not exceed {0} MB.'</span>,
+                <span class="com">// Optional, format message in desired format.</span>
+                formatMessage: <span class="kwd">function</span> () {
+                    <span class="kwd">return this</span>.message.replace(<span class="str">'{0}'</span>, (<span class="kwd">this</span>.max / <span class="kwd">this</span>.page / <span class="kwd">this</span>.page).toFixed(2));
+                },
+                <span class="com">// Optional, filter enabled when function.</span>
+                isEnabled: <span class="kwd">function</span> () {
+                    <span class="kwd">return true</span>;
+                },
+                <span class="com">// Optional, override validation.</span>
+                isValid: <span class="kwd">function</span> () {
+                    <span class="kwd">var</span> size = [].reduce.call(<span class="kwd">this</span>.element.files, <span class="kwd">function</span> (total, file) {
+                        <span class="kwd">return</span> total + file.size;
+                    }, <span class="num">0</span>);
+
+                    <span class="kwd">return</span> size <= <span class="kwd">this</span>.max;
+                }
+            }
+        }
+    }
+  });
+</code>
+</pre>
+            </div>
+        </div>
+    </div>
+</div>

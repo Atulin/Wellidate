@@ -1,0 +1,92 @@
+---
+title: Wellidate - reset method
+---
+<div class="row">
+    <div class="col-12">
+        <div class="widget example">
+            <div class="widget-header">
+                <div class="fa fa-bars"></div>
+                <span>Wellidate - reset method</span>
+            </div>
+            <div class="widget-content">
+                <form class="form" method="post">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="name">Name</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input class="form-control" name="name" required maxlength="10">
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="name"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="surname">Surname</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input class="form-control" name="surname" required minlength="2" maxlength="10">
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="surname"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="birthday">Birthday</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="date" class="form-control" name="birthday" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="birthday"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-right">
+                            <button class="btn btn-default reset" type="button">Reset validation</button>
+                            <button class="btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="widget code">
+            <div class="widget-header">
+                <div class="fa fa-code"></div>
+                <span>Javascript</span>
+            </div>
+            <div class="widget-content">
+<pre class="mb-1">
+<code>
+<span class="com">Resets all validation state for the container.</span>
+reset(): <span class="kwd">void</span>
+</code>
+</pre>
+<pre>
+<code>
+document.querySelector(<span class="str">'form'</span>).addEventListener(<span class="str">'click'</span>, <span class="kwd">function</span> (e) {
+    <span class="kwd">if</span> (e.target.classList.contains(<span class="str">'reset'</span>)) {
+        <span class="kwd">new</span> <span class="cls">Wellidate</span>(<span class="kwd">this</span>).reset();
+    }
+});
+</code>
+</pre>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.querySelector('form').addEventListener('click', function (e) {
+        if (e.target.classList.contains('reset')) {
+            new Wellidate(this).reset();
+        }
+    });
+</script>

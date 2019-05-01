@@ -1,0 +1,88 @@
+---
+title: Wellidate - email rule
+---
+<div class="widget code">
+    <div class="widget-header">
+        <div class="fa fa-code"></div>
+        <span>Wellidate - email rule</span>
+    </div>
+    <div class="widget-content">
+        <div class="row">
+            <div class="col-12">
+                <form method="post">
+<pre class="mb-1">
+<code>
+<div class="input-group mb-1 col-3">
+    <input class="form-control" name="email" type="email">
+    <div class="input-group-append">
+        <button class="input-group-text btn-success">Submit</button>
+    </div>
+</div>
+<span data-valmsg-for="email"></span>
+</code>
+</pre>
+                </form>
+<pre class="mb-1">
+<code>
+<strong>HTML options</strong>
+
+1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="email" <span class="attr">type</span>="email"&gt;</span>
+2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="email" <span class="attr">data-val-email</span>=""&gt;</span>
+3) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="email" <span class="attr">data-val-email</span>="Message"&gt;</span>
+4) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="email" <span class="attr">type</span>="email" <span class="attr">data-val-email</span>="Message"&gt;</span>
+5) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="email"&gt;</span>
+6) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="email"&gt;</span>
+
+<span class="html">&lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>=&quot;email&quot;&gt;&lt;/<span class="tag">span</span>&gt;</span>
+</code>
+</pre>
+<pre>
+<code>
+<strong>JS initialization</strong>
+
+<span class="com">// Any input, input container or form.</span>
+<span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
+
+1-4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form);
+5) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="str">'input'</span>: {
+            email: { }
+        }
+    }
+  });
+6) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    rules: {
+        <span class="com">// Required, any valid document selector for which to apply the rules.</span>
+        <span class="str">'input'</span>: {
+            email: {
+                <span class="com">// Optional, trim value before validating.</span>
+                trim: <span class="kwd">true</span>,
+                <span class="com">// Optional, failed validation message.</span>
+                message: <span class="str">'Please enter a valid email address.'</span>,
+                <span class="com">// Optional, format message in desired format.</span>
+                formatMessage: <span class="kwd">function</span> () {
+                    <span class="kwd">return this</span>.message;
+                },
+                <span class="com">// Optional, filter enabled when function.</span>
+                isEnabled: <span class="kwd">function</span> () {
+                    <span class="kwd">return true</span>;
+                },
+                <span class="com">// Optional, override validation.</span>
+                isValid: <span class="kwd">function</span> () {
+                    <span class="kwd">return</span> <span class="str">/^$|^\w+@\w+\.\w+$/</span>.test(<span class="kwd">this</span>.normalizeValue());
+                },
+                <span class="com">// Optional, override value normalization for the rule.</span>
+                normalizeValue: <span class="kwd">function</span> () {
+                    <span class="kwd">return this</span>.trim ? <span class="kwd">this</span>.element.value.trim() : <span class="kwd">this</span>.element.value;
+                }
+            }
+        }
+    }
+  });
+</code>
+</pre>
+            </div>
+        </div>
+    </div>
+</div>

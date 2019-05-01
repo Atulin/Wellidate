@@ -1,0 +1,176 @@
+<div class="row">
+    <div class="col-6">
+        <div class="widget example">
+            <div class="widget-header">
+                <div class="fa fa-bars"></div>
+                <span>Validation using HTML5 attributes</span>
+            </div>
+            <div class="widget-content">
+                <form class="form" method="post">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="name">Name</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input class="form-control" name="name" required maxlength="10">
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="name"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="surname">Surname</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input class="form-control" name="surname" required minlength="2" maxlength="10">
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="surname"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="birthday">Birthday</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input type="date" class="form-control" name="birthday" required>
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="birthday"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-right">
+                            <button class="btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-6">
+        <div class="widget example">
+            <div class="widget-header">
+                <div class="fa fa-bars"></div>
+                <span>Using data attributes</span>
+            </div>
+            <div class="widget-content">
+                <form method="post">
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="data-name">Name</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input class="form-control" name="data-name" data-val-required="" data-val-length="" data-val-length-max="10">
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="data-name"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="data-surname">Surname</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input class="form-control" name="data-surname" data-val-required="" data-val-length="" data-val-length-min="2" data-val-length-max="10">
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="data-surname"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-12">
+                            <label class="form-control-label" for="data-birthday">Birthday</label>
+                        </div>
+                        <div class="col-lg-6">
+                            <input class="form-control" name="data-birthday" data-val-required="" data-val-date="">
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="form-validation" data-valmsg-for="data-birthday"></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6 text-right">
+                            <button class="btn btn-success">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="widget code col-6">
+        <div class="widget-header">
+            <div class="fa fa-code"></div>
+            <span>Html for validation attributes</span>
+        </div>
+        <div class="widget-content">
+<pre>
+<code>
+<span class="html">&lt;<span class="tag">form</span>&gt;
+    &lt;<span class="tag">div</span> <span class="attr">class</span>="row"&gt;
+        &lt;<span class="tag">div</span> <span class="attr">class</span>="col-md-4 mb-3"&gt;
+            &lt;<span class="tag">label</span> <span class="attr">for</span>="name"&gt;<span class="txt">Name</span>&lt;/<span class="tag">label</span>&gt;
+            &lt;<span class="tag">input</span> <span class="attr">name</span>="name" <span class="attr">required</span> <span class="attr">maxlength</span>="10"&gt;
+            &lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>="name"&gt;&lt;/<span class="tag">span</span>&gt;
+        &lt;/<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="attr">class</span>="col-md-4 mb-3"&gt;
+            &lt;<span class="tag">label</span> <span class="attr">for</span>="surname"&gt;<span class="txt">Surname</span>&lt;/<span class="tag">label</span>&gt;
+            &lt;<span class="tag">input</span> <span class="attr">name</span>="name" <span class="attr">required minlength</span>="2" <span class="attr">maxlength</span>="10"&gt;
+            &lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>="surname"&gt;&lt;/<span class="tag">span</span>&gt;
+        &lt;/<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="attr">class</span>="col-md-4 mb-3"&gt;
+            &lt;<span class="tag">label</span> <span class="attr">for</span>="birthday"&gt;<span class="txt">Birthday</span>&lt;/<span class="tag">label</span>&gt;
+            &lt;<span class="tag">input</span> <span class="attr">type</span>="date" <span class="attr">name</span>="birthday" <span class="attr">required</span>&gt;
+            &lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>="birthday"&gt;&lt;/<span class="tag">span</span>&gt;
+        &lt;/<span class="tag">div</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+&lt;/<span class="tag">form</span>&gt;</span>
+
+&lt;<span class="tag">script</span>&gt;
+    <span class="kwd">new</span> <span class="cls">Wellidate</span>(document.querySelector(<span class="str">'form'</span>));
+&lt;/<span class="tag">script</span>&gt;
+</code>
+</pre>
+        </div>
+    </div>
+    <div class="widget code col-6">
+        <div class="widget-header">
+            <div class="fa fa-code"></div>
+            <span>Html for data attribute validation</span>
+        </div>
+        <div class="widget-content">
+<pre>
+<code>
+<span class="html">&lt;<span class="tag">form</span>&gt;
+    &lt;<span class="tag">div</span> <span class="attr">class</span>="row"&gt;
+        &lt;<span class="tag">div</span> <span class="attr">class</span>="col-md-4 mb-3"&gt;
+            &lt;<span class="tag">label</span> <span class="attr">for</span>="data-name"&gt;<span class="txt">Name</span>&lt;/<span class="tag">label</span>&gt;
+            &lt;<span class="tag">input</span> <span class="attr">name</span>="data-name" <span class="attr">data-val-required</span>="" <span class="attr">data-val-length</span>="" <span class="attr">data-val-length-max</span>="10"&gt;
+            &lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>="data-name"&gt;&lt;/<span class="tag">span</span>&gt;
+        &lt;/<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="attr">class</span>="col-md-4 mb-3"&gt;
+            &lt;<span class="tag">label</span> <span class="attr">for</span>="data-surname"&gt;<span class="txt">Surname</span>&lt;/<span class="tag">label</span>&gt;
+            &lt;<span class="tag">input</span> <span class="attr">name</span>="data-surname"  <span class="attr">data-val-required</span>="" <span class="attr">data-val-length</span>=""
+                   <span class="attr">data-val-length-min</span>="2" <span class="attr">data-val-length-max</span>="10"&gt;
+            &lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>="data-surname"&gt;&lt;/<span class="tag">span</span>&gt;
+        &lt;/<span class="tag">div</span>&gt;
+        &lt;<span class="tag">div</span> <span class="attr">class</span>="col-md-4 mb-3"&gt;
+            &lt;<span class="tag">label</span> <span class="attr">for</span>="data-birthday"&gt;<span class="txt">Birthday</span>&lt;/<span class="tag">label</span>&gt;
+            &lt;<span class="tag">input</span> <span class="attr">name</span>="data-birthday" <span class="attr">data-val-required</span>="" <span class="attr">data-val-date</span>=""&gt;
+            &lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>="data-birthday"&gt;&lt;/<span class="tag">span</span>&gt;
+        &lt;/<span class="tag">div</span>&gt;
+    &lt;/<span class="tag">div</span>&gt;
+&lt;/<span class="tag">form</span>&gt;</span>
+
+&lt;<span class="tag">script</span>&gt;
+    <span class="kwd">new</span> <span class="cls">Wellidate</span>(document.querySelector(<span class="str">'form'</span>));
+&lt;/<span class="tag">script</span>&gt;
+</code>
+</pre>
+        </div>
+    </div>
+</div>
