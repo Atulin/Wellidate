@@ -571,6 +571,9 @@
                     var validatable = this;
                     validatable.isDirty = true;
                     var rule = validatable.rules[method];
+                    var message = message || rule.formatMessage();
+
+                    validatable.element.setCustomValidity(message);
 
                     validatable.elements.forEach(function (element) {
                         element.classList.add(wellidate.inputErrorClass);
@@ -578,14 +581,14 @@
                     });
 
                     validatable.errorContainers.forEach(function (container) {
-                        container.innerHTML = message || rule.formatMessage();
                         container.classList.remove(wellidate.fieldValidClass);
                         container.classList.add(wellidate.fieldErrorClass);
+                        container.innerHTML = message;
                     });
 
                     wellidate.dispatchEvent(validatable.element, 'wellidate-error', {
-                        message: message || rule.formatMessage(),
                         validatable: validatable,
+                        message: message,
                         method: method
                     });
                 },
@@ -610,6 +613,8 @@
                 success: function (message) {
                     var validatable = this;
 
+                    validatable.element.setCustomValidity('');
+
                     validatable.elements.forEach(function (element) {
                         element.classList.add(wellidate.inputValidClass);
                         element.classList.remove(wellidate.inputErrorClass);
@@ -628,6 +633,8 @@
                 reset: function () {
                     var validatable = this;
                     validatable.isDirty = false;
+
+                    validatable.element.setCustomValidity('');
 
                     validatable.elements.forEach(function (element) {
                         element.classList.remove(wellidate.inputErrorClass);
@@ -833,12 +840,16 @@
                 }));
             }
 
+            wellidate.container.classList.add('was-validated');
+
             return !result.invalid.length;
         },
         reset: function () {
             var wellidate = this;
 
             wellidate.summary.reset();
+
+            wellidate.container.classList.remove('was-validated');
 
             wellidate.validatables.forEach(function (validatable) {
                 validatable.reset();
