@@ -8,6 +8,7 @@ body {
     background-repeat: no-repeat;
     background-size: cover;
     font-size: 14px;
+    padding: 15px;
 }
 
 .logo {
@@ -156,10 +157,52 @@ pre {
         color: #2AADBA;
     }
 
-    pre .kwd {
+    pre .kwd,
+    pre .html {
         color: #084DFF;
     }
 
     pre .str {
         color: #CC6500;
     }
+
+    pre .tag {
+        color: #800000;
+    }
+
+    pre .attr {
+        color: #FF2F2F;
+    }
+
+    pre .num {
+        color: #B138E0;
+    }
+
+    pre .txt {
+        color: #000000;
+    }
+
+.input-validation-error {
+    border-color: #F5502C;
+}
+
+.input-validation-error:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 75, 30, 0.3);
+    border-color: #F5502C;
+}
+
+.form .field-validation-error {
+    margin-top: 0.6rem;
+}
+
+.field-validation-error {
+    margin: 0 0 0 0.125rem;
+    display: inline-block;
+    font-size: 0.9rem;
+    color: #F5502C;
+    width: 100%;
+}
+
+.input-group {
+    padding: 0;
+}
