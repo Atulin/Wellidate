@@ -6,7 +6,7 @@ Client side javascript validation library
 
 ### Installation
 
-Include wellidate in the page. Then initialize wellidate instance and call the `validate` method.
+Include wellidate in the page. Then initialize wellidate instance.
 
 ```html
 <html>
