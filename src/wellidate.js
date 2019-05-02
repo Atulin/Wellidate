@@ -45,7 +45,6 @@
         }
 
         wellidate.set(options || {});
-        wellidate.rebuild();
         wellidate.bind();
     }
 
@@ -701,6 +700,8 @@
             wellidate.setOption('inputErrorClass', options.inputErrorClass);
             wellidate.setOption('fieldPendingClass', options.fieldPendingClass);
             wellidate.setOption('inputPendingClass', options.inputPendingClass);
+
+            wellidate.rebuild();
 
             for (var selector in options.rules) {
                 wellidate.filterValidatables(selector).forEach(function (validatable) {

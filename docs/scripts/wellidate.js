@@ -45,7 +45,6 @@
         }
 
         wellidate.set(options || {});
-        wellidate.rebuild();
         wellidate.bind();
     }
 
@@ -472,7 +471,7 @@
         buildInputRules: function (element) {
             var rules = {};
             var wellidate = this;
-            var defaultRule = this.default.rule;
+            var defaultRule = wellidate.default.rule;
 
             if (element.required && wellidate.rules['required']) {
                 rules['required'] = wellidate.extend({}, defaultRule, wellidate.rules['required'], {
@@ -571,6 +570,9 @@
                     var validatable = this;
                     validatable.isDirty = true;
                     var rule = validatable.rules[method];
+                    var message = message || rule.formatMessage();
+
+                    validatable.element.setCustomValidity(message);
 
                     validatable.elements.forEach(function (element) {
                         element.classList.add(wellidate.inputErrorClass);
@@ -578,14 +580,14 @@
                     });
 
                     validatable.errorContainers.forEach(function (container) {
-                        container.innerHTML = message || rule.formatMessage();
                         container.classList.remove(wellidate.fieldValidClass);
                         container.classList.add(wellidate.fieldErrorClass);
+                        container.innerHTML = message;
                     });
 
                     wellidate.dispatchEvent(validatable.element, 'wellidate-error', {
-                        message: message || rule.formatMessage(),
                         validatable: validatable,
+                        message: message,
                         method: method
                     });
                 },
@@ -610,6 +612,8 @@
                 success: function (message) {
                     var validatable = this;
 
+                    validatable.element.setCustomValidity('');
+
                     validatable.elements.forEach(function (element) {
                         element.classList.add(wellidate.inputValidClass);
                         element.classList.remove(wellidate.inputErrorClass);
@@ -628,6 +632,8 @@
                 reset: function () {
                     var validatable = this;
                     validatable.isDirty = false;
+
+                    validatable.element.setCustomValidity('');
 
                     validatable.elements.forEach(function (element) {
                         element.classList.remove(wellidate.inputErrorClass);
@@ -694,6 +700,8 @@
             wellidate.setOption('inputErrorClass', options.inputErrorClass);
             wellidate.setOption('fieldPendingClass', options.fieldPendingClass);
             wellidate.setOption('inputPendingClass', options.inputPendingClass);
+
+            wellidate.rebuild();
 
             for (var selector in options.rules) {
                 wellidate.filterValidatables(selector).forEach(function (validatable) {
@@ -815,7 +823,7 @@
         },
         form: function () {
             var wellidate = this;
-            var result = this.validate.apply(this, arguments);
+            var result = wellidate.validate.apply(wellidate, arguments);
 
             result.valid.forEach(function (valid) {
                 valid.validatable.success();
@@ -828,10 +836,12 @@
             wellidate.summary.show(result);
 
             if (wellidate.focusInvalid) {
-                this.focus(result.invalid.map(function (invalid) {
+                wellidate.focus(result.invalid.map(function (invalid) {
                     return invalid.validatable;
                 }));
             }
+
+            wellidate.container.classList.add('was-validated');
 
             return !result.invalid.length;
         },
@@ -839,6 +849,8 @@
             var wellidate = this;
 
             wellidate.summary.reset();
+
+            wellidate.container.classList.remove('was-validated');
 
             wellidate.validatables.forEach(function (validatable) {
                 validatable.reset();
@@ -881,7 +893,7 @@
                 wellidate.lastActive = invalid.element;
 
                 if (wellidate.focusCleanup) {
-                    validatable.reset();
+                    invalid.reset();
                 }
 
                 invalid.element.focus();

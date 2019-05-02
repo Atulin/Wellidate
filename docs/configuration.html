@@ -1,0 +1,71 @@
+---
+title: Wellidate - instance configuration
+---
+<div class="widget example">
+    <div class="widget-header">
+        <div class="fa fa-bars"></div>
+        <span>Wellidate - instance configuration</span>
+    </div>
+    <div class="widget-content">
+        <div class="row">
+            <div class="col-12">
+<pre>
+<code>
+<span class="com">// Any input, input container or form.</span>
+<span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
+
+<span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+    <span class="com">// Indicates if first invalid input should be focused after `<a href="/Wellidate/api/form">form</a>` method or submit has failed validation.</span>
+    focusInvalid: <span class="kwd">true</span>,
+    <span class="com">// Indicates if first validatable input focus after failed validation should clear the errors.</span>
+    focusCleanup: <span class="kwd">false</span>,
+    <span class="com">// Validatable input class when one or more remote validations are pending.</span>
+    inputPendingClass: <span class="str">'input-validation-pending'</span>,
+    <span class="com">// Validatable input class when at least one of validations failed.</span>
+    inputErrorClass: <span class="str">'input-validation-error'</span>,
+    <span class="com">// Validatable input class when all validations have passed.</span>
+    inputValidClass: <span class="str">'input-validation-valid'</span>,
+    <span class="com">// Validatable error container class when one or more remote validations are pending.</span>
+    fieldPendingClass: <span class="str">'input-validation-pending'</span>,
+    <span class="com">// Validatable error container class when at least one of validations failed.</span>
+    fieldErrorClass: <span class="str">'field-validation-error'</span>,
+    <span class="com">// Validatable error container class when all validations have passed.</span>
+    fieldValidClass: <span class="str">'field-validation-valid'</span>,
+    <span class="com">// Selector to match validatable items.</span>
+    include: <span class="str">'input,textarea,select'</span>,
+    <span class="com">// List of not validatable element selectors.</span>
+    excludes: [
+        <span class="str">'input[type=button]'</span>,
+        <span class="str">'input[type=submit]'</span>,
+        <span class="str">'input[type=image]'</span>,
+        <span class="str">'input[type=reset]'</span>,
+        <span class="str">':disabled'</span>
+    ],
+    <span class="com">// Summary declaration.</span>
+    summary: {
+        <span class="com">// Summary container in which results will be rendered.</span>
+        container: <span class="str">'[data-valmsg-summary=true]'</span>,
+        <span class="com">// Validation result callback.</span>
+        show: <span class="kwd">function</span> (result) {
+        },
+        <span class="com">// Validation reset callback.</span>
+        reset: <span class="kwd">function</span> () {
+        }
+    },
+    <span class="com">// Rules to apply on elements identified by a selector.</span>
+    rules: {
+        <span class="str">'input'</span>: {
+            required: { }
+        },
+        <span class="str">'#username'</span>: {
+            length: {
+                min: <span class="num">6</span>,
+                max: <span class="num">30</span>
+            }
+        }
+    }
+});
+</code>
+</pre>
+    </div>
+</div>
