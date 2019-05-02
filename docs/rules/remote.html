@@ -13,7 +13,7 @@ title: Wellidate - remote rule
 <pre class="mb-1">
 <code>
 <div class="input-group mb-1 col-3">
-    <input class="form-control" name="username" data-val-remote="" data-val-remote-url="is-unique?username=">
+    <input class="form-control" name="username" data-val-remote="" data-val-remote-url="is-unique">
     <div class="input-group-append">
         <button class="input-group-text btn-success">Submit</button>
     </div>
@@ -26,8 +26,8 @@ title: Wellidate - remote rule
 <code>
 <strong>HTML options</strong>
 
-1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-remote</span>="" <span class="attr">data-val-remote-url</span>="is-unique?username="&gt;</span>
-2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-remote</span>="Message" <span class="attr">data-val-remote-url</span>="is-unique?username="&gt;</span>
+1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-remote</span>="" <span class="attr">data-val-remote-url</span>="is-unique"&gt;</span>
+2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-remote</span>="Message" <span class="attr">data-val-remote-url</span>="is-unique"&gt;</span>
 3) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username"&gt;</span>
 4) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username"&gt;</span>
 
@@ -46,7 +46,7 @@ title: Wellidate - remote rule
     rules: {
         <span class="str">'input'</span>: {
             regex: {
-                pattern: <span class="str">'is-unique?username='</span>
+                pattern: <span class="str">'is-unique'</span>
             }
         }
     }
@@ -57,7 +57,9 @@ title: Wellidate - remote rule
         <span class="str">'input'</span>: {
             remote: {
                 <span class="com">// Required, remote validation url.</span>
-                url: <span class="str">'is-unique?username='</span>,
+                url: <span class="str">'is-unique'</span>,
+                <span class="com">// Optional, any additional elements to be included, selectors separated by comma.</span>
+                additionalFields: <span class="str">''</span>,
                 <span class="com">// Optional, trim value before validating.</span>
                 trim: <span class="kwd">true</span>,
                 <span class="com">// Optional, failed validation message.</span>
@@ -101,6 +103,9 @@ title: Wellidate - remote rule
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue: <span class="kwd">function</span> () {
                     <span class="kwd">return this</span>.trim ? <span class="kwd">this</span>.element.value.trim() : <span class="kwd">this</span>.element.value;
+                },
+                <span class="com">// Optional, prepare request with any request changes (headers, callbacks, etc).</span>
+                prepare: <span class="kwd">function</span> (validatable) {
                 },
                 <span class="com">// Optional, override remote response processing.</span>
                 apply: <span class="kwd">function</span> (validatable, response) {

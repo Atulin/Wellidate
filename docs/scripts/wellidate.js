@@ -369,11 +369,11 @@
                     remote.start = setTimeout(function () {
                         if (validatable.isValid) {
                             remote.request = new XMLHttpRequest();
-                            remote.request.open(remote.type, remote.url + remote.element.value, true);
+                            remote.request.open(remote.type, remote.buildUrl(), true);
                             remote.request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
                             remote.request.onload = function () {
-                                if (200 <= this.status && this.status < 400) {
+                                if (validatable.isValid && 200 <= this.status && this.status < 400) {
                                     remote.apply(validatable, this.responseText);
                                 }
                             };
@@ -387,6 +387,23 @@
                     }, 1);
 
                     return true;
+                },
+                buildUrl: function () {
+                    var remote = this;
+                    var url = remote.url.split('?', 2)[0];
+                    var fields = (remote.additionalFields || '').split(',').filter(Boolean);
+                    var query = (remote.url.split('?', 2)[1] || '').split('&').filter(Boolean);
+
+                    for (var i = 0; i < fields.length; i++) {
+                        var element = document.querySelector(fields[i]);
+                        var value = remote.normalizeValue(element) || '';
+
+                        query.push(encodeURIComponent(element.name) + "=" + encodeURIComponent(value));
+                    }
+
+                    query.push(encodeURIComponent(remote.element.name) + "=" + encodeURIComponent(remote.normalizeValue() || ''));
+
+                    return url + '?' + query.join('&');
                 },
                 prepare: function() {
                 },
@@ -413,7 +430,7 @@
                 if (wellidate.container == group[0] && wellidate.validatables.length) {
                     validatables = wellidate.validatables;
                 } else {
-                    validatables = [wellidate.buildValidatable(group)];
+                    validatables.push(wellidate.buildValidatable(group));
                 }
             } else {
                 [].forEach.call(wellidate.container.querySelectorAll(wellidate.include), function (element) {
@@ -577,9 +594,11 @@
                     validatable.elements.forEach(function (element) {
                         element.classList.add(wellidate.inputErrorClass);
                         element.classList.remove(wellidate.inputValidClass);
+                        element.classList.remove(wellidate.inputPendingClass);
                     });
 
                     validatable.errorContainers.forEach(function (container) {
+                        container.classList.remove(wellidate.fieldPendingClass);
                         container.classList.remove(wellidate.fieldValidClass);
                         container.classList.add(wellidate.fieldErrorClass);
                         container.innerHTML = message;
@@ -617,9 +636,11 @@
                     validatable.elements.forEach(function (element) {
                         element.classList.add(wellidate.inputValidClass);
                         element.classList.remove(wellidate.inputErrorClass);
+                        element.classList.remove(wellidate.inputPendingClass);
                     });
 
                     validatable.errorContainers.forEach(function (container) {
+                        container.classList.remove(wellidate.fieldPendingClass);
                         container.classList.remove(wellidate.fieldErrorClass);
                         container.classList.add(wellidate.fieldValidClass);
                         container.innerHTML = message || '';
@@ -638,9 +659,11 @@
                     validatable.elements.forEach(function (element) {
                         element.classList.remove(wellidate.inputErrorClass);
                         element.classList.remove(wellidate.inputValidClass);
+                        element.classList.remove(wellidate.inputPendingClass);
                     });
 
                     validatable.errorContainers.forEach(function (container) {
+                        container.classList.remove(wellidate.fieldPendingClass);
                         container.classList.remove(wellidate.fieldErrorClass);
                         container.classList.remove(wellidate.fieldValidClass);
                         container.innerHTML = '';
@@ -782,20 +805,23 @@
             this.filterValidatables(Array.from(arguments)).forEach(function (validatable) {
                 for (var method in validatable.rules) {
                     var rule = validatable.rules[method];
-                    validatable.isValid = !rule.isEnabled() || rule.isValid(validatable);
 
-                    if (validatable.isValid) {
-                        valid.push({
-                            validatable: validatable
-                        });
-                    } else {
+                    if (rule.isEnabled() && !rule.isValid(validatable)) {
                         invalid.push({
                             message: rule.formatMessage(),
                             validatable: validatable,
                             method: method
                         });
+
+                        return validatable.isValid = false;
                     }
                 }
+
+                valid.push({
+                    validatable: validatable
+                });
+
+                validatable.isValid = true;
             });
 
             return {
