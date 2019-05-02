@@ -1,0 +1,28 @@
+---
+title: Wellidate - changing defaults
+---
+<div class="widget example">
+    <div class="widget-header">
+        <div class="fa fa-bars"></div>
+        <span>Wellidate - changing defaults</span>
+    </div>
+    <div class="widget-content">
+        <div class="row">
+            <div class="col-12">
+<pre>
+<code>
+<strong>Changing defaults</strong>
+
+<span class="com">// Disable trimming on all rules.</span>
+<span class="cls">Wellidate</span>.prototype.default.rule.trim = <span class="kwd">false</span>;
+
+<span class="com">// Disable invalid element focusing on failed validation.</span>
+<span class="cls">Wellidate</span>.prototype.default.focusInvalid = <span class="kwd">false</span>;
+
+<span class="com">// All the other defaults can be found in `<span class="cls">Wellidate</span>.prototype.default`.</span>
+</code>
+</pre>
+            </div>
+        </div>
+    </div>
+</div>
