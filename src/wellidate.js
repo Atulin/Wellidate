@@ -472,7 +472,7 @@
         buildInputRules: function (element) {
             var rules = {};
             var wellidate = this;
-            var defaultRule = this.default.rule;
+            var defaultRule = wellidate.default.rule;
 
             if (element.required && wellidate.rules['required']) {
                 rules['required'] = wellidate.extend({}, defaultRule, wellidate.rules['required'], {
@@ -822,7 +822,7 @@
         },
         form: function () {
             var wellidate = this;
-            var result = this.validate.apply(this, arguments);
+            var result = wellidate.validate.apply(wellidate, arguments);
 
             result.valid.forEach(function (valid) {
                 valid.validatable.success();
@@ -835,7 +835,7 @@
             wellidate.summary.show(result);
 
             if (wellidate.focusInvalid) {
-                this.focus(result.invalid.map(function (invalid) {
+                wellidate.focus(result.invalid.map(function (invalid) {
                     return invalid.validatable;
                 }));
             }
@@ -892,7 +892,7 @@
                 wellidate.lastActive = invalid.element;
 
                 if (wellidate.focusCleanup) {
-                    validatable.reset();
+                    invalid.reset();
                 }
 
                 invalid.element.focus();
