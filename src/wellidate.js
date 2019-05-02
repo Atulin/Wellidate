@@ -410,10 +410,10 @@
             if (matches.call(wellidate.container, wellidate.include)) {
                 var group = wellidate.buildGroupElements(wellidate.container);
 
-                if (wellidate.container == group[0]) {
+                if (wellidate.container == group[0] && wellidate.validatables.length) {
                     validatables = wellidate.validatables;
                 } else {
-                    validatables.push(wellidate.buildValidatable(group));
+                    validatables = [wellidate.buildValidatable(group)];
                 }
             } else {
                 [].forEach.call(wellidate.container.querySelectorAll(wellidate.include), function (element) {
