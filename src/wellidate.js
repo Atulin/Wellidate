@@ -25,6 +25,7 @@
             container.dataset.valId = wellidate.instances.length;
         }
 
+        wellidate.wasValidatedClass = wellidate.default.classes.wasValidated;
         wellidate.inputPendingClass = wellidate.default.classes.inputPending;
         wellidate.fieldPendingClass = wellidate.default.classes.fieldPending;
         wellidate.summary = wellidate.extend({}, wellidate.default.summary);
@@ -97,7 +98,8 @@
                 inputValid: 'input-validation-valid',
                 fieldPending: 'input-validation-pending',
                 fieldError: 'field-validation-error',
-                fieldValid: 'field-validation-valid'
+                fieldValid: 'field-validation-valid',
+                wasValidated: 'was-validated'
             },
             excludes: [
                 'input[type=button]',
@@ -723,6 +725,7 @@
             wellidate.setOption('inputErrorClass', options.inputErrorClass);
             wellidate.setOption('fieldPendingClass', options.fieldPendingClass);
             wellidate.setOption('inputPendingClass', options.inputPendingClass);
+            wellidate.setOption('wasValidatedClass', options.wasValidatedClass);
 
             wellidate.rebuild();
 
@@ -867,7 +870,7 @@
                 }));
             }
 
-            wellidate.container.classList.add('was-validated');
+            wellidate.container.classList.add(wellidate.wasValidatedClass);
 
             return !result.invalid.length;
         },
@@ -876,7 +879,7 @@
 
             wellidate.summary.reset();
 
-            wellidate.container.classList.remove('was-validated');
+            wellidate.container.classList.remove(wellidate.wasValidatedClass);
 
             wellidate.validatables.forEach(function (validatable) {
                 validatable.reset();
