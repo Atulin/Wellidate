@@ -21,10 +21,9 @@
 
         if (container.dataset.valId) {
             return wellidate.instances[parseInt(container.dataset.valId)].set(options || {});
-        } else {
-            container.dataset.valId = wellidate.instances.length;
         }
 
+        wellidate.wasValidatedClass = wellidate.default.classes.wasValidated;
         wellidate.inputPendingClass = wellidate.default.classes.inputPending;
         wellidate.fieldPendingClass = wellidate.default.classes.fieldPending;
         wellidate.summary = wellidate.extend({}, wellidate.default.summary);
@@ -35,6 +34,7 @@
         wellidate.focusCleanup = wellidate.default.focusCleanup;
         wellidate.focusInvalid = wellidate.default.focusInvalid;
         wellidate.excludes = wellidate.default.excludes.slice();
+        container.dataset.valId = wellidate.instances.length;
         wellidate.include = wellidate.default.include;
         wellidate.instances.push(wellidate);
         wellidate.container = container;
@@ -74,6 +74,7 @@
 
                                 result.invalid.forEach(function (invalid) {
                                     var item = document.createElement('li');
+
                                     item.innerHTML = invalid.message;
 
                                     list.appendChild(item);
@@ -97,7 +98,8 @@
                 inputValid: 'input-validation-valid',
                 fieldPending: 'input-validation-pending',
                 fieldError: 'field-validation-error',
-                fieldValid: 'field-validation-valid'
+                fieldValid: 'field-validation-valid',
+                wasValidated: 'was-validated'
             },
             excludes: [
                 'input[type=button]',
@@ -128,7 +130,9 @@
                         }).length;
                     } else if (element.type == 'radio') {
                         if (element.name) {
-                            var checked = document.querySelector('input[name="' + this.wellidate.escapeAttribute(element.name) + '"]:checked');
+                            var name = this.wellidate.escapeAttribute(element.name);
+                            var checked = document.querySelector('input[name="' + name + '"]:checked');
+
                             value = checked ? checked.value : '';
                         } else {
                             value = element.checked ? value : '';
@@ -136,7 +140,7 @@
                     } else if (element.type == 'file') {
                         if (value.lastIndexOf('\\') >= 0) {
                             value = value.substring(value.lastIndexOf('\\') + 1);
-                        } else if (value.lastIndexOf('\/') >= 0) {
+                        } else if (value.lastIndexOf('/') >= 0) {
                             value = value.substring(value.lastIndexOf('/') + 1);
                         }
                     }
@@ -149,7 +153,7 @@
             required: {
                 message: 'This field is required.',
                 isValid: function () {
-                    return this.normalizeValue() ? true : false;
+                    return Boolean(this.normalizeValue());
                 }
             },
             equalto: {
@@ -163,18 +167,21 @@
             length: {
                 message: 'Please enter a value between {0} and {1} characters long.',
                 isValid: function () {
-                    var value = this.normalizeValue();
+                    var length = this;
+                    var value = length.normalizeValue();
 
-                    return (this.min == null || this.min <= value.length) && (value.length <= this.max || this.max == null);
+                    return (length.min == null || length.min <= value.length) && (value.length <= length.max || length.max == null);
                 },
                 formatMessage: function () {
-                    if (this.min != null && this.max == null && !this.isDataMessage) {
-                        return Wellidate.prototype.rules.minlength.message.replace('{0}', this.min);
-                    } else if (this.min == null && this.max != null && !this.isDataMessage) {
-                        return Wellidate.prototype.rules.maxlength.message.replace('{0}', this.max);
+                    var length = this;
+
+                    if (length.min != null && length.max == null && !length.isDataMessage) {
+                        return Wellidate.prototype.rules.minlength.message.replace('{0}', length.min);
+                    } else if (length.min == null && length.max != null && !length.isDataMessage) {
+                        return Wellidate.prototype.rules.maxlength.message.replace('{0}', length.max);
                     }
 
-                    return this.message.replace('{0}', this.min).replace('{1}', this.max);
+                    return length.message.replace('{0}', length.min).replace('{1}', length.max);
                 }
             },
             minlength: {
@@ -198,7 +205,7 @@
             email: {
                 message: 'Please enter a valid email address.',
                 isValid: function () {
-                    return /^$|^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(this.normalizeValue());
+                    return /^$|^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/.test(this.normalizeValue());
                 }
             },
             integer: {
@@ -228,18 +235,21 @@
             range: {
                 message: 'Please enter a value between {0} and {1}.',
                 isValid: function () {
-                    var value = this.normalizeValue();
+                    var range = this;
+                    var value = range.normalizeValue2();
 
-                    return !value || (this.min == null || this.min <= parseFloat(value)) && (parseFloat(value) <= this.max || this.max == null);
+                    return !value || (range.min == null || range.min <= parseFloat(value)) && (parseFloat(value) <= range.max || range.max == null);
                 },
                 formatMessage: function () {
-                    if (this.min != null && this.max == null && !this.isDataMessage) {
-                        return Wellidate.prototype.rules.min.message.replace('{0}', this.min);
-                    } else if (this.min == null && this.max != null && !this.isDataMessage) {
-                        return Wellidate.prototype.rules.max.message.replace('{0}', this.max);
+                    var range = this;
+
+                    if (range.min != null && range.max == null && !range.isDataMessage) {
+                        return Wellidate.prototype.rules.min.message.replace('{0}', range.min);
+                    } else if (range.min == null && range.max != null && !range.isDataMessage) {
+                        return Wellidate.prototype.rules.max.message.replace('{0}', range.max);
                     }
 
-                    return this.message.replace('{0}', this.min).replace('{1}', this.max);
+                    return range.message.replace('{0}', range.min).replace('{1}', range.max);
                 }
             },
             min: {
@@ -308,9 +318,10 @@
                     return size <= this.max || this.max == null;
                 },
                 formatMessage: function () {
-                    var mb = (this.max / this.page / this.page).toFixed(2);
+                    var filesize = this;
+                    var mb = (filesize.max / filesize.page / filesize.page).toFixed(2);
 
-                    return this.message.replace('{0}', mb.replace(/[\.|0]*$/, ''));
+                    return filesize.message.replace('{0}', mb.replace(/[.|0]*$/, ''));
                 }
             },
             accept: {
@@ -328,14 +339,12 @@
                                 if (file.name != extension && '.' + extension == filter[i]) {
                                     return true;
                                 }
-                            } else {
-                                if (/\/\*$/.test(filter[i])) {
-                                    if (file.type.indexOf(filter[i].replace(/\*$/, '')) == 0) {
-                                        return true;
-                                    }
-                                } else if (file.type == filter[i]) {
+                            } else if (/\/\*$/.test(filter[i])) {
+                                if (file.type.indexOf(filter[i].replace(/\*$/, '')) == 0) {
                                     return true;
                                 }
+                            } else if (file.type == filter[i]) {
+                                return true;
                             }
                         }
 
@@ -361,6 +370,7 @@
                 message: 'Please fix this field.',
                 isValid: function (validatable) {
                     var remote = this;
+
                     if (remote.request && remote.request.readyState != 4) {
                         remote.request.abort();
                     }
@@ -405,7 +415,7 @@
 
                     return url + '?' + query.join('&');
                 },
-                prepare: function() {
+                prepare: function () {
                 },
                 apply: function (validatable, response) {
                     var result = JSON.parse(response);
@@ -439,7 +449,9 @@
                     if (element == group[0]) {
                         for (var i = 0; i < wellidate.validatables.length; i++) {
                             if (wellidate.validatables[i].element == element) {
-                                return validatables.push(wellidate.validatables[i]);
+                                validatables.push(wellidate.validatables[i]);
+
+                                return;
                             }
                         }
 
@@ -468,7 +480,7 @@
                 if (rule) {
                     var dataRule = {
                         message: attribute.value || rule.message,
-                        isDataMessage: attribute.value ? true : false
+                        isDataMessage: Boolean(attribute.value)
                     };
 
                     [].forEach.call(element.attributes, function (attribute) {
@@ -490,62 +502,62 @@
             var wellidate = this;
             var defaultRule = wellidate.default.rule;
 
-            if (element.required && wellidate.rules['required']) {
-                rules['required'] = wellidate.extend({}, defaultRule, wellidate.rules['required'], {
+            if (element.required && wellidate.rules.required) {
+                rules.required = wellidate.extend({}, defaultRule, wellidate.rules.required, {
                     element: element
                 });
             }
 
-            if (element.type == 'email' && wellidate.rules['email']) {
-                rules['email'] = wellidate.extend({}, defaultRule, wellidate.rules['email'], {
+            if (element.type == 'email' && wellidate.rules.email) {
+                rules.email = wellidate.extend({}, defaultRule, wellidate.rules.email, {
                     element: element
                 });
             }
 
-            if (element.accept && wellidate.rules['accept']) {
-                rules['accept'] = wellidate.extend({}, defaultRule, wellidate.rules['accept'], {
+            if (element.accept && wellidate.rules.accept) {
+                rules.accept = wellidate.extend({}, defaultRule, wellidate.rules.accept, {
                     types: element.accept,
                     element: element
                 });
             }
 
-            if (element.minLength >= 0 && wellidate.rules['minlength']) {
-                rules['minlength'] = wellidate.extend({}, defaultRule, wellidate.rules['minlength'], {
+            if (element.minLength >= 0 && wellidate.rules.minlength) {
+                rules.minlength = wellidate.extend({}, defaultRule, wellidate.rules.minlength, {
                     min: element.minLength,
                     element: element
                 });
             }
 
-            if (element.maxLength >= 0 && wellidate.rules['maxlength']) {
-                rules['maxlength'] = wellidate.extend({}, defaultRule, wellidate.rules['maxlength'], {
+            if (element.maxLength >= 0 && wellidate.rules.maxlength) {
+                rules.maxlength = wellidate.extend({}, defaultRule, wellidate.rules.maxlength, {
                     max: element.maxLength,
                     element: element
                 });
             }
 
-            if (element.min && wellidate.rules['min']) {
-                rules['min'] = wellidate.extend({}, defaultRule, wellidate.rules['min'], {
+            if (element.min && wellidate.rules.min) {
+                rules.min = wellidate.extend({}, defaultRule, wellidate.rules.min, {
                     value: element.min,
                     element: element
                 });
             }
 
-            if (element.max && wellidate.rules['max']) {
-                rules['max'] = wellidate.extend({}, defaultRule, wellidate.rules['max'], {
+            if (element.max && wellidate.rules.max) {
+                rules.max = wellidate.extend({}, defaultRule, wellidate.rules.max, {
                     value: element.max,
                     element: element
                 });
             }
 
-            if (element.step && wellidate.rules['step']) {
-                rules['step'] = wellidate.extend({}, defaultRule, wellidate.rules['step'], {
+            if (element.step && wellidate.rules.step) {
+                rules.step = wellidate.extend({}, defaultRule, wellidate.rules.step, {
                     value: element.step,
                     element: element
                 });
             }
 
-            if (element.pattern && wellidate.rules['regex']) {
-                rules['regex'] = wellidate.extend({}, defaultRule, wellidate.rules['regex'], {
+            if (element.pattern && wellidate.rules.regex) {
+                rules.regex = wellidate.extend({}, defaultRule, wellidate.rules.regex, {
                     pattern: element.pattern,
                     title: element.title,
                     element: element
@@ -568,27 +580,34 @@
                 errorContainers: wellidate.buildErrorContainers(element),
 
                 validate: function () {
-                    for (var method in this.rules) {
-                        var rule = this.rules[method];
+                    var validatable = this;
 
-                        if (rule.isEnabled() && !rule.isValid(this)) {
-                            this.error(method);
+                    validatable.isValid = true;
 
-                            return this.isValid = false;
+                    for (var method in validatable.rules) {
+                        var rule = validatable.rules[method];
+
+                        if (rule.isEnabled() && !rule.isValid(validatable)) {
+                            validatable.isValid = false;
+                            validatable.error(method);
+
+                            break;
                         }
                     }
 
-                    this.success();
+                    if (validatable.isValid) {
+                        validatable.success();
+                    }
 
-                    return this.isValid = true;
+                    return validatable.isValid;
                 },
 
                 error: function (method, message) {
                     var validatable = this;
-                    validatable.isDirty = true;
                     var rule = validatable.rules[method];
-                    var message = message || rule.formatMessage();
 
+                    validatable.isDirty = true;
+                    message = message || rule.formatMessage();
                     validatable.element.setCustomValidity(message);
 
                     validatable.elements.forEach(function (element) {
@@ -652,8 +671,8 @@
                 },
                 reset: function () {
                     var validatable = this;
-                    validatable.isDirty = false;
 
+                    validatable.isDirty = false;
                     validatable.element.setCustomValidity('');
 
                     validatable.elements.forEach(function (element) {
@@ -679,19 +698,27 @@
 
             return validatable;
         },
-        buildGroupElements: function (element) {
+        buildGroupElements: function (group) {
+            if (group.name) {
+                var name = this.escapeAttribute(group.name);
+
+                return [].map.call(document.querySelectorAll('[name="' + name + '"]'), function (element) {
+                    return element;
+                });
+            }
+
+            return [group];
+        },
+        buildErrorContainers: function (element) {
             if (element.name) {
                 var name = this.escapeAttribute(element.name);
 
-                return Array.from(document.querySelectorAll('[name="' + name + '"]'));
+                return [].map.call(document.querySelectorAll('[data-valmsg-for="' + name + '"]'), function (container) {
+                    return container;
+                });
             }
 
-            return [element];
-        },
-        buildErrorContainers: function (element) {
-            var name = this.escapeAttribute(element.name);
-
-            return name ? Array.from(document.querySelectorAll('[data-valmsg-for="' + name + '"]')) : [];
+            return [];
         },
 
         extend: function () {
@@ -723,6 +750,7 @@
             wellidate.setOption('inputErrorClass', options.inputErrorClass);
             wellidate.setOption('fieldPendingClass', options.fieldPendingClass);
             wellidate.setOption('inputPendingClass', options.inputPendingClass);
+            wellidate.setOption('wasValidatedClass', options.wasValidatedClass);
 
             wellidate.rebuild();
 
@@ -742,12 +770,14 @@
 
             return this;
         },
-        setOption: function (key, value) {
+        setOption: function (option, value) {
+            var wellidate = this;
+
             if (value != undefined) {
                 if (Object.prototype.toString.call(value) == '[object Object]') {
-                    this[key] = this.extend(this[key], value);
+                    wellidate[option] = wellidate.extend(wellidate[option], value);
                 } else {
-                    this[key] = value;
+                    wellidate[option] = value;
                 }
             }
         },
@@ -782,10 +812,8 @@
         },
 
         apply: function (results) {
-            var wellidate = this;
-
             for (var selector in results) {
-                wellidate.filterValidatables(selector).forEach(function (validatable) {
+                this.filterValidatables(selector).forEach(function (validatable) {
                     var result = results[selector];
 
                     if (result.error != undefined) {
@@ -802,7 +830,7 @@
             var valid = [];
             var invalid = [];
 
-            this.filterValidatables(Array.from(arguments)).forEach(function (validatable) {
+            this.filterValidatables.apply(this, arguments).forEach(function (validatable) {
                 for (var method in validatable.rules) {
                     var rule = validatable.rules[method];
 
@@ -813,7 +841,9 @@
                             method: method
                         });
 
-                        return validatable.isValid = false;
+                        validatable.isValid = false;
+
+                        return;
                     }
                 }
 
@@ -833,17 +863,20 @@
         isValid: function () {
             var isValid = true;
 
-            this.filterValidatables(Array.from(arguments)).forEach(function (validatable) {
+            this.filterValidatables.apply(this, arguments).forEach(function (validatable) {
                 for (var method in validatable.rules) {
                     var rule = validatable.rules[method];
 
                     if (rule.isEnabled() && !rule.isValid(validatable)) {
-                        return isValid = validatable.isValid = false;
+                        validatable.isValid = false;
+                        isValid = false;
+
+                        return;
                     }
                 }
 
                 validatable.isValid = true;
-            })
+            });
 
             return isValid;
         },
@@ -856,7 +889,7 @@
             });
 
             result.invalid.forEach(function (invalid) {
-                invalid.validatable.error(invalid.method)
+                invalid.validatable.error(invalid.method);
             });
 
             wellidate.summary.show(result);
@@ -867,7 +900,7 @@
                 }));
             }
 
-            wellidate.container.classList.add('was-validated');
+            wellidate.container.classList.add(wellidate.wasValidatedClass);
 
             return !result.invalid.length;
         },
@@ -876,7 +909,7 @@
 
             wellidate.summary.reset();
 
-            wellidate.container.classList.remove('was-validated');
+            wellidate.container.classList.remove(wellidate.wasValidatedClass);
 
             wellidate.validatables.forEach(function (validatable) {
                 validatable.reset();
@@ -884,8 +917,9 @@
         },
 
         dispatchEvent: function (element, type, detail) {
-            var event;
-            if (typeof (Event) === 'function') {
+            var event = null;
+
+            if (typeof Event === 'function') {
                 event = new CustomEvent(type, {
                     detail: detail,
                     bubbles: true
@@ -903,11 +937,10 @@
         },
         focus: function (errors) {
             if (errors.length) {
-                var wellidate = this;
                 var invalid = errors[0];
 
                 for (var i = 1; i < errors.length; i++) {
-                    if (wellidate.lastActive == errors[i].element) {
+                    if (this.lastActive == errors[i].element) {
                         invalid = errors[i];
 
                         break;
@@ -916,9 +949,9 @@
                     }
                 }
 
-                wellidate.lastActive = invalid.element;
+                this.lastActive = invalid.element;
 
-                if (wellidate.focusCleanup) {
+                if (this.focusCleanup) {
                     invalid.reset();
                 }
 
