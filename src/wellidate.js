@@ -187,7 +187,7 @@
             minlength: {
                 message: 'Please enter at least {0} characters.',
                 isValid: function () {
-                    return this.min == null || !parseFloat(this.min) <= this.normalizeValue().length;
+                    return !parseFloat(this.min) || this.min <= this.normalizeValue().length;
                 },
                 formatMessage: function () {
                     return this.message.replace('{0}', this.min);
@@ -236,7 +236,7 @@
                 message: 'Please enter a value between {0} and {1}.',
                 isValid: function () {
                     var range = this;
-                    var value = range.normalizeValue2();
+                    var value = range.normalizeValue();
 
                     return !value || (range.min == null || range.min <= parseFloat(value)) && (parseFloat(value) <= range.max || range.max == null);
                 },
