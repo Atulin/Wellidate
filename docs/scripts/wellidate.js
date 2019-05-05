@@ -521,16 +521,16 @@
                 });
             }
 
-            if (element.minLength >= 0 && wellidate.rules.minlength) {
+            if (element.getAttribute('minlength') && wellidate.rules.minlength) {
                 rules.minlength = wellidate.extend({}, defaultRule, wellidate.rules.minlength, {
-                    min: element.minLength,
+                    min: element.getAttribute('minlength'),
                     element: element
                 });
             }
 
-            if (element.maxLength >= 0 && wellidate.rules.maxlength) {
+            if (element.getAttribute('maxlength') && wellidate.rules.maxlength) {
                 rules.maxlength = wellidate.extend({}, defaultRule, wellidate.rules.maxlength, {
-                    max: element.maxLength,
+                    max: element.getAttribute('maxlength'),
                     element: element
                 });
             }
