@@ -13,10 +13,7 @@ title: Wellidate - lower rule
 <pre class="mb-1">
 <code>
 <div class="input-group mb-1 col-3">
-    <input class="form-control" name="number" data-val-lower="" data-val-lower-than="10">
-    <div class="input-group-append">
-        <button class="input-group-text btn-success">Submit</button>
-    </div>
+    <input class="form-control" name="number" data-val-lower="" data-val-lower-than="10"><div class="input-group-append"><button class="input-group-text btn-success">Submit</button></div>
 </div>
 <span data-valmsg-for="number"></span>
 </code>
@@ -74,7 +71,7 @@ title: Wellidate - lower rule
                 isValid: <span class="kwd">function</span> () {
                     <span class="kwd">var</span> value = <span class="kwd">this</span>.normalizeValue();
 
-                    <span class="kwd">return</span> !value || parseFloat(value) < <span class="kwd">this</span>.than;
+                    <span class="kwd">return</span> !value || parseFloat(value) &lt; <span class="kwd">this</span>.than;
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue: <span class="kwd">function</span> () {

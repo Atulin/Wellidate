@@ -13,10 +13,7 @@ title: Wellidate - filesize rule
 <pre class="mb-1">
 <code>
 <div class="input-group mb-1 col-3">
-    <input class="form-control" name="files" type="file" multiple data-val-filesize="" data-val-filesize-max="1048576">
-    <div class="input-group-append">
-        <button class="input-group-text btn-success">Submit</button>
-    </div>
+    <input class="form-control" name="files" type="file" multiple data-val-filesize="" data-val-filesize-max="1048576"><div class="input-group-append"><button class="input-group-text btn-success">Submit</button></div>
 </div>
 <span data-valmsg-for="files"></span>
 </code>
@@ -76,7 +73,7 @@ title: Wellidate - filesize rule
                         <span class="kwd">return</span> total + file.size;
                     }, <span class="num">0</span>);
 
-                    <span class="kwd">return</span> size <= <span class="kwd">this</span>.max;
+                    <span class="kwd">return</span> size &lt;= <span class="kwd">this</span>.max;
                 }
             }
         }

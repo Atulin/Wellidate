@@ -13,10 +13,7 @@ title: Wellidate - accept rule
 <pre class="mb-1">
 <code>
 <div class="input-group mb-1 col-3">
-    <input class="form-control" name="files" type="file" accept=".dat,audio/mp3,text/*" multiple data-val-accept="" data-val-accept-types=".dat,audio/mp3,text/*">
-    <div class="input-group-append">
-        <button class="input-group-text btn-success">Submit</button>
-    </div>
+    <input class="form-control" name="files" type="file" accept=".dat,audio/mp3,text/*" multiple data-val-accept="" data-val-accept-types=".dat,audio/mp3,text/*"><div class="input-group-append"><button class="input-group-text btn-success">Submit</button></div>
 </div>
 <span data-valmsg-for="files"></span>
 </code>
@@ -77,7 +74,7 @@ title: Wellidate - accept rule
                     <span class="kwd">var</span> correct = [].filter.call(<span class="kwd">this</span>.element.files, <span class="kwd">function</span> (file) {
                         <span class="kwd">var</span> extension = file.name.split(<span class="str">'.'</span>).pop();
 
-                        <span class="kwd">for</span> (<span class="kwd">var</span> i = <span class="num">0</span>; i < filter.length; i++) {
+                        <span class="kwd">for</span> (<span class="kwd">var</span> i = <span class="num">0</span>; i &lt; filter.length; i++) {
                             <span class="kwd">if</span> (filter[i].indexOf(<span class="str">'.'</span>) == <span class="num">0</span>) {
                                 <span class="kwd">if</span> (file.name != extension && <span class="str">'.'</span> + extension == filter[i]) {
                                     <span class="kwd">return true</span>;

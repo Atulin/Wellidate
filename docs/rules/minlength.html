@@ -13,10 +13,7 @@ title: Wellidate - minlength rule
 <pre class="mb-1">
 <code>
 <div class="input-group mb-1 col-3">
-    <input class="form-control" name="username" minlength="2">
-    <div class="input-group-append">
-        <button class="input-group-text btn-success">Submit</button>
-    </div>
+    <input class="form-control" name="username" minlength="2"><div class="input-group-append"><button class="input-group-text btn-success">Submit</button></div>
 </div>
 <span data-valmsg-for="username"></span>
 </code>
@@ -26,8 +23,8 @@ title: Wellidate - minlength rule
 <code>
 <strong>HTML options</strong>
 
-1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">minlength</span>="10"&gt;</span>
-2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">minlength</span>="10" <span class="attr">data-val-minlength</span>="Message"&gt;</span>
+1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">minlength</span>="2"&gt;</span>
+2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">minlength</span>="2" <span class="attr">data-val-minlength</span>="Message"&gt;</span>
 3) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-minlength</span>="" <span class="attr">data-val-minlength-min</span>="2"&gt;</span>
 4) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username" <span class="attr">data-val-minlength</span>="Message" <span class="attr">data-val-minlength-min</span>="2"&gt;</span>
 5) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="username"&gt;</span>
@@ -74,7 +71,7 @@ title: Wellidate - minlength rule
                 },
                 <span class="com">// Optional, override validation.</span>
                 isValid: <span class="kwd">function</span> () {
-                    <span class="kwd">return</span> <span class="kwd">this</span>.min <= <span class="kwd">this</span>.normalizeValue().length;
+                    <span class="kwd">return</span> <span class="kwd">this</span>.min &lt;= <span class="kwd">this</span>.normalizeValue().length;
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue: <span class="kwd">function</span> () {

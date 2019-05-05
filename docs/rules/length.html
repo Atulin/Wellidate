@@ -13,10 +13,7 @@ title: Wellidate - length rule
 <pre class="mb-1">
 <code>
 <div class="input-group mb-1 col-3">
-    <input class="form-control" name="username" data-val-length="" data-val-length-min="2" data-val-length-max="10">
-    <div class="input-group-append">
-        <button class="input-group-text btn-success">Submit</button>
-    </div>
+    <input class="form-control" name="username" data-val-length="" data-val-length-min="2" data-val-length-max="10"><div class="input-group-append"><button class="input-group-text btn-success">Submit</button></div>
 </div>
 <span data-valmsg-for="username"></span>
 </code>
@@ -77,7 +74,7 @@ title: Wellidate - length rule
                 isValid: <span class="kwd">function</span> () {
                     <span class="kwd">var</span> value = <span class="kwd">this</span>.normalizeValue();
 
-                    <span class="kwd">return</span> (<span class="kwd">this</span>.min == <span class="kwd">null</span> || <span class="kwd">this</span>.min <= value.length) && (value.length <= <span class="kwd">this</span>.max || <span class="kwd">this</span>.max == <span class="kwd">null</span>);
+                    <span class="kwd">return</span> (<span class="kwd">this</span>.min == <span class="kwd">null</span> || <span class="kwd">this</span>.min &lt;= value.length) && (value.length &lt;= <span class="kwd">this</span>.max || <span class="kwd">this</span>.max == <span class="kwd">null</span>);
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue: <span class="kwd">function</span> () {

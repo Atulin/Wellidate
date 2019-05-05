@@ -13,10 +13,7 @@ title: Wellidate - maxlength rule
 <pre class="mb-1">
 <code>
 <div class="input-group mb-1 col-3">
-    <input class="form-control" name="username" data-val-maxlength="" data-val-maxlength-max="10">
-    <div class="input-group-append">
-        <button class="input-group-text btn-success">Submit</button>
-    </div>
+    <input class="form-control" name="username" data-val-maxlength="" data-val-maxlength-max="10"><div class="input-group-append"><button class="input-group-text btn-success">Submit</button></div>
 </div>
 <span data-valmsg-for="username"></span>
 </code>
@@ -74,7 +71,7 @@ title: Wellidate - maxlength rule
                 },
                 <span class="com">// Optional, override validation.</span>
                 isValid: <span class="kwd">function</span> () {
-                    <span class="kwd">return</span> <span class="kwd">this</span>.normalizeValue().length <= <span class="kwd">this</span>.max;
+                    <span class="kwd">return</span> <span class="kwd">this</span>.normalizeValue().length &lt;= <span class="kwd">this</span>.max;
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue: <span class="kwd">function</span> () {
