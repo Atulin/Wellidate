@@ -37,7 +37,7 @@ title: Wellidate - rebuild method
                             <label class="form-control-label" for="birthday">Birthday</label>
                         </div>
                         <div id="birthday-control" class="col-lg-6">
-                            <input id="birthday" type="date" class="form-control" name="birthday" required>
+                            <input id="birthday" type="text" class="form-control" name="birthday" required>
                         </div>
                         <div class="col-lg-6">
                             <span class="form-validation" data-valmsg-for="birthday"></span>
@@ -106,7 +106,7 @@ document.querySelector(<span class="str">'form'</span>).addEventListener(<span c
                 birthday.name = 'birthday';
                 birthday.required = true;
                 birthday.id = 'birthday';
-                birthday.type = 'date';
+                birthday.type = 'text';
 
                 label.style.display = '';
                 document.getElementById('birthday-control').appendChild(birthday);
