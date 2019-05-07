@@ -23,7 +23,7 @@
     "url": "https://github.com/NonFactors/Wellidate/issues"
   },
   "files": [
-    "src/wellidate.js"
+    "src/*.*"
   ],
   "homepage": "https://nonfactors.github.io/Wellidate/"
 }
