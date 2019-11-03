@@ -13,7 +13,7 @@ title: Wellidate - number rule
 <pre class="mb-1">
 <code>
 <div class="input-group mb-1 col-3">
-    <input class="form-control" name="number" data-val-number=""><div class="input-group-append"><button class="input-group-text btn-success">Submit</button></div>
+    <input class="form-control" name="number" data-val-number="" data-val-number-precision="4" data-val-number-scale="2"><div class="input-group-append"><button class="input-group-text btn-success">Submit</button></div>
 </div>
 <span data-valmsg-for="number"></span>
 </code>
@@ -25,8 +25,11 @@ title: Wellidate - number rule
 
 1) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="number" <span class="attr">data-val-number</span>=""&gt;</span>
 2) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="number" <span class="attr">data-val-number</span>="Message"&gt;</span>
-3) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="number"&gt;</span>
-4) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="number"&gt;</span>
+3) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="number" <span class="attr">data-val-number</span>="" <span class="attr">data-val-number-scale</span>="2"&gt;</span>
+4) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="number" <span class="attr">data-val-number</span>="" <span class="attr">data-val-number-precision</span>="4"&gt;</span>
+5) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="number" <span class="attr">data-val-number</span>="" <span class="attr">data-val-number-precision</span>="4" <span class="attr">data-val-number-scale</span>="2"&gt;</span>
+6) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="number"&gt;</span>
+7) <span class="html">&lt;<span class="tag">input</span> <span class="attr">name</span>="number"&gt;</span>
 
 <span class="html">&lt;<span class="tag">span</span> <span class="attr">data-valmsg-for</span>=&quot;number&quot;&gt;&lt;/<span class="tag">span</span>&gt;</span>
 </code>
@@ -38,15 +41,15 @@ title: Wellidate - number rule
 <span class="com">// Any input, input container or form.</span>
 <span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
 
-1-2) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form);
-3) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+1-5) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form);
+6) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
     rules: {
         <span class="str">'input'</span>: {
             number: { }
         }
     }
   });
-4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+7) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
     rules: {
         <span class="com">// Required, any valid document selector for which to apply the rules.</span>
         <span class="str">'input'</span>: {
@@ -55,6 +58,10 @@ title: Wellidate - number rule
                 trim: <span class="kwd">true</span>,
                 <span class="com">// Optional, failed validation message.</span>
                 message: <span class="str">'Please enter a valid number.'</span>,
+                <span class="com">// Optional, failed scale validation message.</span>
+                scaleMessage: <span class="str">'Please enter a value with no more than {0} fractional digits'</span>,
+                <span class="com">// Optional, failed precision validation message.</span>
+                precisionMessage: <span class="str">'Please enter a value using no more than {0} significant digits'</span>,
                 <span class="com">// Optional, format message in desired format.</span>
                 formatMessage: <span class="kwd">function</span> () {
                     <span class="kwd">return this</span>.message;

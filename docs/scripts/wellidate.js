@@ -1,5 +1,5 @@
 /*!
- * Wellidate 1.0.0
+ * Wellidate 1.1.0
  * https://github.com/NonFactors/Wellidate
  *
  * Copyright © NonFactors
@@ -216,8 +216,46 @@
             },
             number: {
                 message: 'Please enter a valid number.',
+                scaleMessage: 'Please enter a value with no more than {0} fractional digits',
+                precisionMessage: 'Please enter a value using no more than {0} significant digits',
                 isValid: function () {
-                    return /^$|^[+-]?(\d+|\d{1,3}(,\d{3})+)?(\.\d+)?$/.test(this.normalizeValue());
+                    var number = this;
+                    var value = number.normalizeValue();
+                    var scale = parseInt(number.scale) || 0;
+                    var precision = parseInt(number.precision);
+                    var isValid = /^$|^[+-]?(\d+|\d{1,3}(,\d{3})+)?(\.\d+)?$/.test(value);
+
+                    if (isValid && value && precision > 0) {
+                        number.isValidPrecision = number.digits(value.split('.')[0].replace(/^[-+,0]+/, '')) <= precision - scale;
+                        isValid = isValid && number.isValidPrecision;
+                    } else {
+                        number.isValidPrecision = true;
+                    }
+
+                    if (isValid && value.indexOf('.') >= 0) {
+                        number.isValidScale = number.digits(value.split('.')[1].replace(/0+$/, '')) <= scale;
+                        isValid = isValid && number.isValidScale;
+                    } else {
+                        number.isValidScale = true;
+                    }
+
+                    return isValid;
+                },
+                digits: function (value) {
+                    return value.split('').filter(function (e) {
+                        return !isNaN(e);
+                    }).length;
+                },
+                formatMessage: function () {
+                    var number = this;
+
+                    if (number.isValidPrecision === false && !number.isDataMessage) {
+                        return number.precisionMessage.replace('{0}', parseInt(number.precision) - (parseInt(number.scale) || 0));
+                    } else if (number.isValidScale === false && !number.isDataMessage) {
+                        return number.scaleMessage.replace('{0}', parseInt(number.scale) || 0);
+                    }
+
+                    return number.message;
                 }
             },
             digits: {
