@@ -2,6 +2,7 @@
   "name": "wellidate",
   "version": "1.1.0",
   "description": "Client side javascript validation library",
+  "types": "src/wellidate.d.ts",
   "main": "src/wellidate.js",
   "directories": {
     "doc": "docs"
