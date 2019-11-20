@@ -1,5 +1,5 @@
 /*!
- * Wellidate 1.1.1
+ * Wellidate 1.1.2
  * https://github.com/NonFactors/Wellidate
  *
  * Copyright © NonFactors
@@ -8,9 +8,9 @@
  * http://www.opensource.org/licenses/mit-license.php
  */
 (function (global, factory) {
-    if (typeof define === "function" && define.amd) {
+    if (typeof define === 'function' && define.amd) {
         define(factory);
-    } else if (typeof module === "object" && module.exports) {
+    } else if (typeof module === 'object' && module.exports) {
         module.exports = factory();
     } else {
         global.Wellidate = factory();
@@ -187,7 +187,7 @@
             minlength: {
                 message: 'Please enter at least {0} characters.',
                 isValid: function () {
-                    return !parseFloat(this.min) || this.min <= this.normalizeValue().length;
+                    return this.min <= this.normalizeValue().length;
                 },
                 formatMessage: function () {
                     return this.message.replace('{0}', this.min);
@@ -196,7 +196,7 @@
             maxlength: {
                 message: 'Please enter no more than {0} characters.',
                 isValid: function () {
-                    return this.normalizeValue().length <= this.max || !parseFloat(this.max);
+                    return this.normalizeValue().length <= this.max;
                 },
                 formatMessage: function () {
                     return this.message.replace('{0}', this.max);
@@ -273,10 +273,11 @@
             range: {
                 message: 'Please enter a value between {0} and {1}.',
                 isValid: function () {
-                    var range = this;
-                    var value = range.normalizeValue();
+                    var min = parseFloat(this.min);
+                    var max = parseFloat(this.max);
+                    var value = this.normalizeValue();
 
-                    return !value || (range.min == null || range.min <= parseFloat(value)) && (parseFloat(value) <= range.max || range.max == null);
+                    return !value || (min == null || min <= value) && (value <= max || max == null);
                 },
                 formatMessage: function () {
                     var range = this;
@@ -295,7 +296,7 @@
                 isValid: function () {
                     var value = this.normalizeValue();
 
-                    return !value || !parseFloat(this.value) || this.value <= parseFloat(value);
+                    return !value || parseFloat(this.value) <= value;
                 },
                 formatMessage: function () {
                     return this.message.replace('{0}', this.value);
@@ -306,7 +307,7 @@
                 isValid: function () {
                     var value = this.normalizeValue();
 
-                    return !value || !parseFloat(this.value) || parseFloat(value) <= this.value;
+                    return !value || value <= parseFloat(this.value);
                 },
                 formatMessage: function () {
                     return this.message.replace('{0}', this.value);
@@ -317,7 +318,7 @@
                 isValid: function () {
                     var value = this.normalizeValue();
 
-                    return !value || !parseFloat(this.than) || this.than < parseFloat(value);
+                    return !value || parseFloat(this.than) < value;
                 },
                 formatMessage: function () {
                     return this.message.replace('{0}', this.than);
@@ -328,7 +329,7 @@
                 isValid: function () {
                     var value = this.normalizeValue();
 
-                    return !value || !parseFloat(this.than) || parseFloat(value) < this.than;
+                    return !value || value < parseFloat(this.than);
                 },
                 formatMessage: function () {
                     return this.message.replace('{0}', this.than);
@@ -339,7 +340,7 @@
                 isValid: function () {
                     var value = this.normalizeValue();
 
-                    return !value || !parseFloat(this.value) || parseFloat(value) % this.value == 0;
+                    return !value || value % parseInt(this.value) == 0;
                 },
                 formatMessage: function () {
                     return this.message.replace('{0}', this.value);
@@ -446,10 +447,10 @@
                         var element = document.querySelector(fields[i]);
                         var value = remote.normalizeValue(element) || '';
 
-                        query.push(encodeURIComponent(element.name) + "=" + encodeURIComponent(value));
+                        query.push(encodeURIComponent(element.name) + '=' + encodeURIComponent(value));
                     }
 
-                    query.push(encodeURIComponent(remote.element.name) + "=" + encodeURIComponent(remote.normalizeValue() || ''));
+                    query.push(encodeURIComponent(remote.element.name) + '=' + encodeURIComponent(remote.normalizeValue() || ''));
 
                     return url + '?' + query.join('&');
                 },
