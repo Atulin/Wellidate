@@ -100,17 +100,17 @@ document.querySelector(<span class="str">'form'</span>).addEventListener(<span c
 <script>
     document.querySelector('form').addEventListener('click', function (e) {
         if (e.target.classList.contains('apply')) {
-        new Wellidate(this).apply({
-            '#name': {
-                error: 'Enter a unique name'
-            },
-            '#surname': {
-                success: ''
-            },
-            '#birthday': {
-                reset: ''
-            }
-        });
-    }
+            new Wellidate(this).apply({
+                '#name': {
+                    error: 'Enter a unique name'
+                },
+                '#surname': {
+                    success: ''
+                },
+                '#birthday': {
+                    reset: ''
+                }
+            });
+        }
     });
 </script>

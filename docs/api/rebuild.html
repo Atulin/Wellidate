@@ -91,9 +91,9 @@ document.querySelector(<span class="str">'form'</span>).addEventListener(<span c
 <script>
     document.querySelector('form').addEventListener('click', function (e) {
         if (e.target.classList.contains('toggle')) {
-            var wellidate = new Wellidate(this);
-            var birthday = document.getElementById('birthday');
-            var label = document.getElementById('birthday-label');
+            const wellidate = new Wellidate(this);
+            const birthday = document.getElementById('birthday');
+            const label = document.getElementById('birthday-label');
 
             if (birthday) {
                 wellidate.reset();

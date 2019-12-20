@@ -38,18 +38,18 @@ title: Wellidate - number rule
 <code>
 <strong>JS initialization</strong>
 
-<span class="com">// Any input, input container or form.</span>
-<span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
+<span class="com">// Any input, input container or a form.</span>
+<span class="kwd">const</span> container = document.querySelector(<span class="str">'form'</span>);
 
-1-5) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form);
-6) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+1-5) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container);
+6) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
         <span class="str">'input'</span>: {
             number: { }
         }
     }
   });
-7) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+7) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
         <span class="com">// Required, any valid document selector for which to apply the rules.</span>
         <span class="str">'input'</span>: {
@@ -63,19 +63,19 @@ title: Wellidate - number rule
                 <span class="com">// Optional, failed precision validation message.</span>
                 precisionMessage: <span class="str">'Please enter a value using no more than {0} significant digits'</span>,
                 <span class="com">// Optional, format message in desired format.</span>
-                formatMessage: <span class="kwd">function</span> () {
+                formatMessage() {
                     <span class="kwd">return this</span>.message;
                 },
                 <span class="com">// Optional, filter enabled when function.</span>
-                isEnabled: <span class="kwd">function</span> () {
+                isEnabled() {
                     <span class="kwd">return true</span>;
                 },
                 <span class="com">// Optional, override validation.</span>
-                isValid: <span class="kwd">function</span> () {
+                isValid() {
                     <span class="kwd">return</span> <span class="str">/^$|^[+-]?(\d+|\d{1,3}(,\d{3})+)?(\.\d+)?$/</span>.test(<span class="kwd">this</span>.normalizeValue());
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
-                normalizeValue: <span class="kwd">function</span> () {
+                normalizeValue() {
                     <span class="kwd">return this</span>.trim ? <span class="kwd">this</span>.element.value.trim() : <span class="kwd">this</span>.element.value;
                 }
             }

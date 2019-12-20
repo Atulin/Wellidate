@@ -37,11 +37,11 @@ title: Wellidate - minlength rule
 <code>
 <strong>JS initialization</strong>
 
-<span class="com">// Any input, input container or form.</span>
-<span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
+<span class="com">// Any input, input container or a form.</span>
+<span class="kwd">const</span> container = document.querySelector(<span class="str">'form'</span>);
 
-1-4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form);
-5) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+1-4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container);
+5) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
         <span class="str">'input'</span>: {
             minlength: {
@@ -50,7 +50,7 @@ title: Wellidate - minlength rule
         }
     }
   });
-6) <span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+6) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
         <span class="com">// Required, any valid document selector for which to apply the rules.</span>
         <span class="str">'input'</span>: {
@@ -62,19 +62,19 @@ title: Wellidate - minlength rule
                 <span class="com">// Optional, failed validation message.</span>
                 message: <span class="str">'Please enter at least {0} characters.'</span>,
                 <span class="com">// Optional, format message in desired format.</span>
-                formatMessage: <span class="kwd">function</span> () {
+                formatMessage() {
                     <span class="kwd">return this</span>.message.replace(<span class="str">'{0}'</span>, <span class="kwd">this</span>.min);
                 },
                 <span class="com">// Optional, filter enabled when function.</span>
-                isEnabled: <span class="kwd">function</span> () {
+                isEnabled() {
                     <span class="kwd">return true</span>;
                 },
                 <span class="com">// Optional, override validation.</span>
-                isValid: <span class="kwd">function</span> () {
+                isValid() {
                     <span class="kwd">return</span> <span class="kwd">this</span>.min &lt;= <span class="kwd">this</span>.normalizeValue().length;
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
-                normalizeValue: <span class="kwd">function</span> () {
+                normalizeValue() {
                     <span class="kwd">return this</span>.trim ? <span class="kwd">this</span>.element.value.trim() : <span class="kwd">this</span>.element.value;
                 }
             }

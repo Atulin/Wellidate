@@ -11,10 +11,10 @@ title: Wellidate - instance configuration
             <div class="col-12">
 <pre>
 <code>
-<span class="com">// Any input, input container or form.</span>
-<span class="kwd">var</span> form = document.querySelector(<span class="str">'form'</span>);
+<span class="com">// Any input, input container or a form.</span>
+<span class="kwd">const</span> container = document.querySelector(<span class="str">'form'</span>);
 
-<span class="kwd">new</span> <span class="cls">Wellidate</span>(form, {
+<span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     <span class="com">// Indicates if first invalid input should be focused after `<a href="/Wellidate/api/form">form</a>` method or submit has failed validation.</span>
     focusInvalid: <span class="kwd">true</span>,
     <span class="com">// Indicates if first validatable input focus after failed validation should clear the errors.</span>
@@ -48,10 +48,10 @@ title: Wellidate - instance configuration
         <span class="com">// Summary container in which results will be rendered.</span>
         container: <span class="str">'[data-valmsg-summary=true]'</span>,
         <span class="com">// Validation result callback.</span>
-        show: <span class="kwd">function</span> (result) {
+        show(result) {
         },
         <span class="com">// Validation reset callback.</span>
-        reset: <span class="kwd">function</span> () {
+        reset() {
         }
     },
     <span class="com">// Rules to apply on elements identified by a selector.</span>

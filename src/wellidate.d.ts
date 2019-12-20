@@ -1,162 +1,124 @@
+/*!
+ * Wellidate 2.0.0
+ * https://github.com/NonFactors/Wellidate
+ *
+ * Copyright © NonFactors
+ *
+ * Licensed under the terms of the MIT License
+ * http://www.opensource.org/licenses/mit-license.php
+ */
 interface WellidateRule {
     trim: boolean;
     message: string;
     [parameter: string]: any;
-
     isEnabled(): boolean;
     formatMessage(): string;
-    normalizeValue(element?: HTMLElement): any;
+    normalizeValue(element?: HTMLElement): string;
     isValid(validatable: WellidateValidatable): boolean;
 }
-
+interface WellidateRules {
+    [method: string]: WellidateRule;
+}
 interface WellidateSummary {
     container: string;
-
-    reset(): void;
     show(result: WellidateResults): void;
+    reset(): void;
 }
-
-interface WellidateOptions {
-    summary: WellidateSummary;
-
-    include: string;
-    excludes: string[];
-
-    focusCleanup: boolean;
-    focusInvalid: boolean;
-
-    fieldValidClass: string;
-    fieldErrorClass: string;
-    inputValidClass: string;
-
-    inputErrorClass: string;
-    fieldPendingClass: string;
-    inputPendingClass: string;
-
-    wasValidatedClass: string;
-
-    rules: {
-        [method: string]: WellidateRule
-    };
-}
-
-interface WellidateValidatable {
-    isValid: boolean;
-    isDirty: boolean;
-
-    wellidate: Wellidate;
-    element: HTMLElement;
-    elements: HTMLElement[];
-    errorContainers: HTMLElement[];
-    rules: {
-        [method: string]: WellidateRule
-    };
-
-    validate(): boolean;
-
-    reset(message?: string): void;
-    success(message?: string): void;
-    pending(message?: string): void;
-    error(method: string | null, message?: string): void;
-}
-
 interface WellidateResults {
     isValid: boolean;
-
     invalid: {
         method: string;
         message: string;
         validatable: WellidateValidatable;
     }[];
-
     valid: {
         validatable: WellidateValidatable;
     }[];
 }
-
 interface WellidateApplyResults {
     [selector: string]: {
         error?: string;
         reset?: string;
         success?: string;
-    }
+    };
 }
-
 interface WellidateDefaults {
     focusInvalid: boolean;
     focusCleanup: boolean;
-
     include: string;
     excludes: string[];
-
     summary: WellidateSummary;
-
     classes: {
         inputPending: string;
         inputError: string;
         inputValid: string;
-
         fieldPending: string;
         fieldError: string;
         fieldValid: string;
-
         wasValidated: string;
     };
     rule: WellidateRule;
+    rules: {
+        [method: string]: any;
+    };
 }
-
-declare class Wellidate {
-    static instances: Wellidate[];
-    static rules: { [method: string]: WellidateRule };
-
-    container: HTMLElement;
-    lastActive?: HTMLElement;
+declare class WellidateOptions {
+    rules: WellidateRules;
     summary: WellidateSummary;
-    submitHandler?: () => void;
-    validatables: WellidateValidatable[];
-
-    focusInvalid: boolean;
-    focusCleanup: boolean;
-
     include: string;
     excludes: string[];
-
-    inputPendingClass: string;
-    inputErrorClass: string;
-    inputValidClass: string;
-    fieldPendingClass: string;
-    fieldErrorClass: string;
+    focusCleanup: boolean;
+    focusInvalid: boolean;
     fieldValidClass: string;
+    fieldErrorClass: string;
+    inputValidClass: string;
+    inputErrorClass: string;
+    fieldPendingClass: string;
+    inputPendingClass: string;
     wasValidatedClass: string;
-
-    constructor(container: HTMLElement, options: WellidateOptions);
-
-    set(options: WellidateOptions): this;
-
+}
+export declare class WellidateValidatable {
+    isValid: boolean;
+    isDirty: boolean;
+    wellidate: Wellidate;
+    rules: WellidateRules;
+    element: HTMLInputElement;
+    elements: HTMLInputElement[];
+    errorContainers: HTMLElement[];
+    constructor(wellidate: Wellidate, group: HTMLInputElement[]);
+    validate(): boolean;
+    reset(message?: string): void;
+    pending(message?: string): void;
+    success(message?: string): void;
+    error(method: string | null, message?: string): void;
+    private buildErrorContainers;
+    private buildInputRules;
+    private buildDataRules;
+    private build;
+    private bind;
+}
+export declare class Wellidate extends WellidateOptions {
+    static default: WellidateDefaults;
+    private static instances;
+    container: HTMLElement;
+    lastActive?: HTMLElement;
+    submitHandler?: () => void;
+    validatables: WellidateValidatable[];
+    [option: string]: [keyof Wellidate];
+    constructor(container: HTMLElement, options?: Partial<WellidateOptions>);
+    set(options: Partial<WellidateOptions>): this;
     rebuild(): void;
     form(...filter: string[]): boolean;
     isValid(...filter: string[]): boolean;
     apply(results: WellidateApplyResults): void;
     validate(...filter: string[]): WellidateResults;
-
     reset(): void;
-
-    private extend(root: any, ...args: any[]);
-    private setOption(key: string, value: any);
-
-    private buildGroupElements(group: HTMLElement[]): HTMLElement[];
-    private buildErrorContainers(element: HTMLElement): HTMLElement[];
-    private buildValidatable(group: HTMLElement[]): WellidateValidatable[];
-    private buildRules(element: HTMLElement): { [method: string]: WellidateRule };
-    private buildDataRules(element: HTMLElement): { [method: string]: WellidateRule };
-    private buildInputRules(element: HTMLElement): { [method: string]: WellidateRule };
-
-    private escapeAttribute(name: string): string;
-    private isExcluded(element: HTMLElement): boolean;
-    private focus(invalid: WellidateValidatable[]): void;
-    private filterValidatables(...filter: string[]): WellidateValidatable[];
-    private dispatchEvent(element: HTMLElement, type: string, detail: any): void;
-
-    private bindUnobstrusive(validatable: WellidateValidatable): void;
-    private bind(): void;
+    private extend;
+    private setOption;
+    private buildGroupElements;
+    private focus;
+    private isExcluded;
+    private filterValidatables;
+    private bind;
 }
+export {};
