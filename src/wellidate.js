@@ -559,7 +559,7 @@
         isExcluded(element) {
             for (const exclude of this.excludes) {
                 if (element.matches(exclude)) {
-                    return false;
+                    return true;
                 }
             }
 

@@ -1084,7 +1084,7 @@ export class Wellidate extends WellidateOptions {
     private isExcluded(element: HTMLElement): boolean {
         for (const exclude of this.excludes) {
             if (element.matches(exclude)) {
-                return false;
+                return true;
             }
         }
 
