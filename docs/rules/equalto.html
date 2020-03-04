@@ -38,14 +38,14 @@ title: Wellidate - equalto rule
 <strong>JS initialization</strong>
 
 <span class="com">// Any input, input container or a form.</span>
-<span class="kwd">const</span> container = document.querySelector(<span class="str">'form'</span>);
+<span class="kwd">const</span> container = document.querySelector(<span class="str">"form"</span>);
 
 1-2) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container);
 3) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
-        <span class="str">'[name="password-repeat"]'</span>: {
+        <span class="str">"[name=password-repeat]"</span>: {
             equalto: {
-                other: <span class="str">'password'</span>
+                other: <span class="str">"password"</span>
             }
         }
     }
@@ -53,14 +53,14 @@ title: Wellidate - equalto rule
 4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
         <span class="com">// Required, any valid document selector for which to apply the rules.</span>
-        <span class="str">'[name="password-repeat"]'</span>: {
+        <span class="str">"[name=password-repeat]"</span>: {
             required: {
                 <span class="com">// Optional, trim value before validating.</span>
                 trim: <span class="kwd">true</span>,
                 <span class="com">// Required, other element id to compare with.</span>
-                other: <span class="str">'password'</span>,
+                other: <span class="str">"password"</span>,
                 <span class="com">// Optional, failed validation message.</span>
-                message: <span class="str">'Please enter the same value again.'</span>,
+                message: <span class="str">"Please enter the same value again."</span>,
                 <span class="com">// Optional, format message in desired format.</span>
                 formatMessage() {
                     <span class="kwd">return this</span>.message;

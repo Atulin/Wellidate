@@ -74,8 +74,8 @@ rebuild(): <span class="kwd">void</span>
 </pre>
 <pre>
 <code>
-document.querySelector(<span class="str">'form'</span>).addEventListener(<span class="str">'click'</span>, <span class="kwd">function</span> (e) {
-    <span class="kwd">if</span> (e.target.classList.contains(<span class="str">'toggle'</span>)) {
+document.querySelector(<span class="str">"form"</span>).addEventListener(<span class="str">"click"</span>, <span class="kwd">function</span> (e) {
+    <span class="kwd">if</span> (e.target.classList.contains(<span class="str">"toggle"</span>)) {
         addOrRemoveFields();
 
         <span class="kwd">new</span> <span class="cls">Wellidate</span>(<span class="kwd">this</span>).rebuild();
@@ -89,27 +89,27 @@ document.querySelector(<span class="str">'form'</span>).addEventListener(<span c
 </div>
 
 <script>
-    document.querySelector('form').addEventListener('click', function (e) {
-        if (e.target.classList.contains('toggle')) {
+    document.querySelector("form").addEventListener("click", function (e) {
+        if (e.target.classList.contains("toggle")) {
             const wellidate = new Wellidate(this);
-            const birthday = document.getElementById('birthday');
-            const label = document.getElementById('birthday-label');
+            const birthday = document.getElementById("birthday");
+            const label = document.getElementById("birthday-label");
 
             if (birthday) {
                 wellidate.reset();
 
-                label.style.display = 'none';
+                label.style.display = "none";
                 birthday.parentElement.removeChild(birthday);
             } else {
-                birthday = document.createElement('input');
-                birthday.className = 'form-control';
-                birthday.name = 'birthday';
+                birthday = document.createElement("input");
+                birthday.className = "form-control";
+                birthday.name = "birthday";
                 birthday.required = true;
-                birthday.id = 'birthday';
-                birthday.type = 'text';
+                birthday.id = "birthday";
+                birthday.type = "text";
 
-                label.style.display = '';
-                document.getElementById('birthday-control').appendChild(birthday);
+                label.style.display = "";
+                document.getElementById("birthday-control").appendChild(birthday);
             }
 
             wellidate.rebuild();

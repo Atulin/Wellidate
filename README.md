@@ -19,7 +19,7 @@ Include wellidate in the page. Then initialize wellidate instance.
 
         <script src="/scripts/wellidate.js"></script>
         <script>
-            [].forEach.call(document.getElementsByTagName('form'), form => {
+            [].forEach.call(document.getElementsByTagName("form"), form => {
                 new Wellidate(form);
             });
         </script>

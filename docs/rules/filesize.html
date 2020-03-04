@@ -36,12 +36,12 @@ title: Wellidate - filesize rule
 <strong>JS initialization</strong>
 
 <span class="com">// Any input, input container or a form.</span>
-<span class="kwd">const</span> container = document.querySelector(<span class="str">'form'</span>);
+<span class="kwd">const</span> container = document.querySelector(<span class="str">"form"</span>);
 
 1-2) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container);
 3) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
-        <span class="str">'input'</span>: {
+        <span class="str">"input"</span>: {
             filesize: {
                 max: <span class="num">1048576</span>
             }
@@ -51,17 +51,17 @@ title: Wellidate - filesize rule
 4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
         <span class="com">// Required, any valid document selector for which to apply the rules.</span>
-        <span class="str">'input'</span>: {
+        <span class="str">"input"</span>: {
             filesize: {
                 <span class="com">// Required, maximum number of bytes all selected files must not exceed.</span>
                 max: <span class="num">1048576</span>,
                 <span class="com">// Optional, bytes per kilobyte size to use when formatting a user friendly message.</span>
                 page: <span class="num">1024</span>,
                 <span class="com">// Optional, failed validation message.</span>
-                message: <span class="str">'File size should not exceed {0} MB.'</span>,
+                message: <span class="str">"File size should not exceed {0} MB."</span>,
                 <span class="com">// Optional, format message in desired format.</span>
                 formatMessage() {
-                    <span class="kwd">return this</span>.message.replace(<span class="str">'{0}'</span>, (<span class="kwd">this</span>.max / <span class="kwd">this</span>.page / <span class="kwd">this</span>.page).toFixed(2));
+                    <span class="kwd">return this</span>.message.replace(<span class="str">"{0}"</span>, (<span class="kwd">this</span>.max / <span class="kwd">this</span>.page / <span class="kwd">this</span>.page).toFixed(2));
                 },
                 <span class="com">// Optional, filter enabled when function.</span>
                 isEnabled() {

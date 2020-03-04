@@ -71,8 +71,8 @@ reset(): <span class="kwd">void</span>
 </pre>
 <pre>
 <code>
-document.querySelector(<span class="str">'form'</span>).addEventListener(<span class="str">'click'</span>, <span class="kwd">function</span> (e) {
-    <span class="kwd">if</span> (e.target.classList.contains(<span class="str">'reset'</span>)) {
+document.querySelector(<span class="str">"form"</span>).addEventListener(<span class="str">"click"</span>, <span class="kwd">function</span> (e) {
+    <span class="kwd">if</span> (e.target.classList.contains(<span class="str">"reset"</span>)) {
         <span class="kwd">new</span> <span class="cls">Wellidate</span>(<span class="kwd">this</span>).reset();
     }
 });
@@ -84,8 +84,8 @@ document.querySelector(<span class="str">'form'</span>).addEventListener(<span c
 </div>
 
 <script>
-    document.querySelector('form').addEventListener('click', function (e) {
-        if (e.target.classList.contains('reset')) {
+    document.querySelector("form").addEventListener("click", function (e) {
+        if (e.target.classList.contains("reset")) {
             new Wellidate(this).reset();
         }
     });

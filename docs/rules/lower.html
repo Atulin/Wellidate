@@ -36,12 +36,12 @@ title: Wellidate - lower rule
 <strong>JS initialization</strong>
 
 <span class="com">// Any input, input container or a form.</span>
-<span class="kwd">const</span> container = document.querySelector(<span class="str">'form'</span>);
+<span class="kwd">const</span> container = document.querySelector(<span class="str">"form"</span>);
 
 1-2) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container);
 3) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
-        <span class="str">'input'</span>: {
+        <span class="str">"input"</span>: {
             lower: {
                 than: <span class="num">10</span>
             }
@@ -51,17 +51,17 @@ title: Wellidate - lower rule
 4) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
         <span class="com">// Required, any valid document selector for which to apply the rules.</span>
-        <span class="str">'input'</span>: {
+        <span class="str">"input"</span>: {
             lower: {
                 <span class="com">// Required, maximum numeric value which is not allowed to be entered.</span>
                 than: <span class="num">10</span>,
                 <span class="com">// Optional, trim value before validating.</span>
                 trim: <span class="kwd">true</span>,
                 <span class="com">// Optional, failed validation message.</span>
-                message: <span class="str">'Please enter a value lower than {0}.'</span>,
+                message: <span class="str">"Please enter a value lower than {0}."</span>,
                 <span class="com">// Optional, format message in desired format.</span>
                 formatMessage() {
-                    <span class="kwd">return this</span>.message.replace(<span class="str">'{0}'</span>, <span class="kwd">this</span>.min);
+                    <span class="kwd">return this</span>.message.replace(<span class="str">"{0}"</span>, <span class="kwd">this</span>.min);
                 },
                 <span class="com">// Optional, filter enabled when function.</span>
                 isEnabled() {

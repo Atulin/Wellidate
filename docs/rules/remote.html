@@ -36,14 +36,14 @@ title: Wellidate - remote rule
 <strong>JS initialization</strong>
 
 <span class="com">// Any input, input container or a form.</span>
-<span class="kwd">const</span> container = document.querySelector(<span class="str">'form'</span>);
+<span class="kwd">const</span> container = document.querySelector(<span class="str">"form"</span>);
 
 1-2) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container);
 7) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
-        <span class="str">'input'</span>: {
+        <span class="str">"input"</span>: {
             remote: {
-                url: <span class="str">'is-unique'</span>
+                url: <span class="str">"is-unique"</span>
             }
         }
     }
@@ -51,16 +51,16 @@ title: Wellidate - remote rule
 8) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
         <span class="com">// Required, any valid document selector for which to apply the rules.</span>
-        <span class="str">'input'</span>: {
+        <span class="str">"input"</span>: {
             remote: {
                 <span class="com">// Required, remote validation url.</span>
-                url: <span class="str">'is-unique'</span>,
+                url: <span class="str">"is-unique"</span>,
                 <span class="com">// Optional, any additional elements to be included, selectors separated by comma.</span>
-                additionalFields: <span class="str">''</span>,
+                additionalFields: <span class="str">""</span>,
                 <span class="com">// Optional, trim value before validating.</span>
                 trim: <span class="kwd">true</span>,
                 <span class="com">// Optional, failed validation message.</span>
-                message: <span class="str">'Please fix this field.'</span>,
+                message: <span class="str">"Please fix this field."</span>,
                 <span class="com">// Optional, format message in desired format.</span>
                 formatMessage() {
                     <span class="kwd">return this</span>.message;
@@ -81,7 +81,7 @@ title: Wellidate - remote rule
                         <span class="kwd">if</span> (validatable.isValid) {
                             remote.request = <span class="kwd">new</span> XMLHttpRequest();
                             remote.request.open(remote.type, remote.url + remote.element.value, <span class="kwd">true</span>);
-                            remote.request.setRequestHeader(<span class="str">'X-Requested-With'</span>, <span class="str">'XMLHttpRequest'</span>);
+                            remote.request.setRequestHeader(<span class="str">"X-Requested-With"</span>, <span class="str">"XMLHttpRequest"</span>);
 
                             remote.request.onload = <span class="kwd">function</span> () {
                                 <span class="kwd">if</span> (<span class="num">200</span> &lt;= <span class="kwd">this</span>.status && <span class="kwd">this</span>.status &lt; <span class="num">400</span>) {
@@ -111,7 +111,7 @@ title: Wellidate - remote rule
                     <span class="kwd">if</span> (result.isValid) {
                         validatable.success(result.message);
                     } <span class="kwd">else</span> {
-                        validatable.error(<span class="str">'remote'</span>, result.message);
+                        validatable.error(<span class="str">"remote"</span>, result.message);
                     }
                 }
             }

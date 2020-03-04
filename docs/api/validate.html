@@ -92,8 +92,8 @@ return: <span class="com">validation result in format</span>
 </pre>
 <pre>
 <code>
-document.querySelector(<span class="str">'form'</span>).addEventListener(<span class="str">'click'</span>, <span class="kwd">function</span> (e) {
-    <span class="kwd">if</span> (e.target.classList.contains(<span class="str">'validate'</span>)) {
+document.querySelector(<span class="str">"form"</span>).addEventListener(<span class="str">"click"</span>, <span class="kwd">function</span> (e) {
+    <span class="kwd">if</span> (e.target.classList.contains(<span class="str">"validate"</span>)) {
         <span class="cls">console</span>.log(<span class="kwd">new</span> <span class="cls">Wellidate</span>(<span class="kwd">this</span>).validate());
     }
 });
@@ -105,8 +105,8 @@ document.querySelector(<span class="str">'form'</span>).addEventListener(<span c
 </div>
 
 <script>
-    document.querySelector('form').addEventListener('click', function (e) {
-        if (e.target.classList.contains('validate')) {
+    document.querySelector("form").addEventListener("click", function (e) {
+        if (e.target.classList.contains("validate")) {
             console.log(new Wellidate(this).validate());
         }
     });

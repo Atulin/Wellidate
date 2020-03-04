@@ -40,14 +40,14 @@ title: Wellidate - regex rule
 <strong>JS initialization</strong>
 
 <span class="com">// Any input, input container or a form.</span>
-<span class="kwd">const</span> container = document.querySelector(<span class="str">'form'</span>);
+<span class="kwd">const</span> container = document.querySelector(<span class="str">"form"</span>);
 
 1-6) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container);
 7) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
-        <span class="str">'input'</span>: {
+        <span class="str">"input"</span>: {
             regex: {
-                pattern: <span class="str">'\w{2}-\d{4}'</span>
+                pattern: <span class="str">"\w{2}-\d{4}"</span>
             }
         }
     }
@@ -55,19 +55,19 @@ title: Wellidate - regex rule
 8) <span class="kwd">new</span> <span class="cls">Wellidate</span>(container, {
     rules: {
         <span class="com">// Required, any valid document selector for which to apply the rules.</span>
-        <span class="str">'input'</span>: {
+        <span class="str">"input"</span>: {
             regex: {
                 <span class="com">// Required, pattern to match on the input.</span>
-                pattern: <span class="str">'\w{2}-\d{4}'</span>,
+                pattern: <span class="str">"\w{2}-\d{4}"</span>,
                 <span class="com">// Optional, text describing the pattern.</span>
-                title: <span class="str">'Product code for testing XX-0000.'</span>,
+                title: <span class="str">"Product code for testing XX-0000."</span>,
                 <span class="com">// Optional, trim value before validating.</span>
                 trim: <span class="kwd">true</span>,
                 <span class="com">// Optional, failed validation message.</span>
-                message: <span class="str">'Please enter value in a valid format. {0}'</span>,
+                message: <span class="str">"Please enter value in a valid format. {0}"</span>,
                 <span class="com">// Optional, format message in desired format.</span>
                 formatMessage() {
-                    <span class="kwd">return this</span>.message.replace(<span class="str">'{0}'</span>, <span class="kwd">this</span>.title || <span class="str">''</span>);
+                    <span class="kwd">return this</span>.message.replace(<span class="str">"{0}"</span>, <span class="kwd">this</span>.title || <span class="str">""</span>);
                 },
                 <span class="com">// Optional, filter enabled when function.</span>
                 isEnabled() {
