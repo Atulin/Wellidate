@@ -7,7 +7,7 @@
  * Licensed under the terms of the MIT License
  * http://www.opensource.org/licenses/mit-license.php
  */
-interface WellidateRule {
+export interface WellidateRule {
     trim: boolean;
     message: string;
     [parameter: string]: any;
@@ -16,15 +16,15 @@ interface WellidateRule {
     normalizeValue(element?: HTMLElement): string;
     isValid(validatable: WellidateValidatable): boolean;
 }
-interface WellidateRules {
+export interface WellidateRules {
     [method: string]: WellidateRule;
 }
-interface WellidateSummary {
+export interface WellidateSummary {
     container: string;
     show(result: WellidateResults): void;
     reset(): void;
 }
-interface WellidateResults {
+export interface WellidateResults {
     isValid: boolean;
     invalid: {
         method: string;
@@ -35,14 +35,14 @@ interface WellidateResults {
         validatable: WellidateValidatable;
     }[];
 }
-interface WellidateApplyResults {
+export interface WellidateApplyResults {
     [selector: string]: {
         error?: string;
         reset?: string;
         success?: string;
     };
 }
-interface WellidateDefaults {
+export interface WellidateDefaults {
     focusInvalid: boolean;
     focusCleanup: boolean;
     include: string;
@@ -62,7 +62,7 @@ interface WellidateDefaults {
         [method: string]: any;
     };
 }
-declare class WellidateOptions {
+export interface WellidateOptions {
     rules: WellidateRules;
     summary: WellidateSummary;
     include: string;
@@ -97,14 +97,27 @@ export declare class WellidateValidatable {
     private build;
     private bind;
 }
-export declare class Wellidate extends WellidateOptions {
+export declare class Wellidate implements WellidateOptions {
     static default: WellidateDefaults;
     private static instances;
+    rules: WellidateRules;
+    summary: WellidateSummary;
+    include: string;
+    excludes: string[];
+    focusCleanup: boolean;
+    focusInvalid: boolean;
+    fieldValidClass: string;
+    fieldErrorClass: string;
+    inputValidClass: string;
+    inputErrorClass: string;
+    fieldPendingClass: string;
+    inputPendingClass: string;
+    wasValidatedClass: string;
     container: HTMLElement;
     lastActive?: HTMLElement;
     submitHandler?: () => void;
     validatables: WellidateValidatable[];
-    [option: string]: [keyof Wellidate];
+    [option: string]: any;
     constructor(container: HTMLElement, options?: Partial<WellidateOptions>);
     set(options: Partial<WellidateOptions>): this;
     rebuild(): void;
@@ -121,4 +134,3 @@ export declare class Wellidate extends WellidateOptions {
     private filterValidatables;
     private bind;
 }
-export {};

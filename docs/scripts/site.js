@@ -1,12 +1,12 @@
 (function () {
-    document.getElementById('SearchInput').addEventListener('input', function () {
-        const menus = document.querySelectorAll('.sidebar li');
-        const searches = this.value.toLowerCase().split(' ');
+    document.getElementById("SearchInput").addEventListener("input", function () {
+        const menus = document.querySelectorAll(".sidebar li");
+        const searches = this.value.toLowerCase().split(" ");
 
         for (let i = 0; i < menus.length; i++) {
+            const menuWords = menus[i].innerText.toLowerCase().split(" ");
             let isMatch = true;
 
-            const menuWords = menus[i].innerText.toLowerCase().split(' ');
             for (let j = 0; j < searches.length; j++) {
                 let hasMatch = false;
 
@@ -22,14 +22,14 @@
             }
 
             if (isMatch) {
-                menus[i].style.display = '';
+                menus[i].style.display = "";
             } else {
-                menus[i].style.display = 'none';
+                menus[i].style.display = "none";
             }
         }
     });
 
-    [].forEach.call(document.querySelectorAll('form'), function (element) {
+    [].forEach.call(document.querySelectorAll("form"), element => {
         new Wellidate(element);
     });
 })();
