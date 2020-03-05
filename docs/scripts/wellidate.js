@@ -364,34 +364,23 @@
         }
 
         rebuild() {
-            let validatables = [];
             const wellidate = this;
+
+            wellidate.validatables = [];
 
             if (wellidate.container.matches(wellidate.include)) {
                 const group = wellidate.buildGroupElements(wellidate.container);
 
-                if (wellidate.container == group[0] && wellidate.validatables.length) {
-                    validatables = wellidate.validatables;
-                } else {
-                    validatables.push(new WellidateValidatable(wellidate, group));
-                }
+                wellidate.validatables.push(new WellidateValidatable(wellidate, group));
             } else {
                 for (const element of wellidate.container.querySelectorAll(wellidate.include)) {
                     const group = wellidate.buildGroupElements(element);
 
                     if (element == group[0]) {
-                        for (const validatable of wellidate.validatables.filter(val => val.element == element)) {
-                            validatables.push(validatable);
-
-                            return;
-                        }
-
-                        validatables.push(new WellidateValidatable(wellidate, group));
+                        wellidate.validatables.push(new WellidateValidatable(wellidate, group));
                     }
                 }
             }
-
-            wellidate.validatables = validatables;
         }
         form(...filter) {
             const wellidate = this;

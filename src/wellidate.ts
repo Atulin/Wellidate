@@ -899,34 +899,23 @@ export class Wellidate implements WellidateOptions {
     }
 
     public rebuild(): void {
-        let validatables: WellidateValidatable[] = [];
         const wellidate = this;
+
+        wellidate.validatables = [];
 
         if (wellidate.container.matches(wellidate.include)) {
             const group = wellidate.buildGroupElements(wellidate.container);
 
-            if (wellidate.container == group[0] && wellidate.validatables.length) {
-                validatables = wellidate.validatables;
-            } else {
-                validatables.push(new WellidateValidatable(wellidate, <HTMLInputElement[]>group));
-            }
+            wellidate.validatables.push(new WellidateValidatable(wellidate, <HTMLInputElement[]>group));
         } else {
             for (const element of wellidate.container.querySelectorAll<HTMLElement>(wellidate.include)) {
                 const group = wellidate.buildGroupElements(element);
 
                 if (element == group[0]) {
-                    for (const validatable of wellidate.validatables.filter(val => val.element == element)) {
-                        validatables.push(validatable);
-
-                        return;
-                    }
-
-                    validatables.push(new WellidateValidatable(wellidate, <HTMLInputElement[]>group));
+                    wellidate.validatables.push(new WellidateValidatable(wellidate, <HTMLInputElement[]>group));
                 }
             }
         }
-
-        wellidate.validatables = validatables;
     }
     public form(...filter: string[]): boolean {
         const wellidate = this;

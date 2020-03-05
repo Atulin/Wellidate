@@ -77,7 +77,7 @@ return: <span class="com">true if all validated elements are valid, otherwise fa
 </pre>
 <pre>
 <code>
-document.querySelector(<span class="str">"form"/span>).addEventListener(<span class="str">"click"</span>, <span class="kwd">function</span> (e) {
+document.querySelector(<span class="str">"form"</span>).addEventListener(<span class="str">"click"</span>, <span class="kwd">function</span> (e) {
     <span class="kwd">if</span> (e.target.classList.contains(<span class="str">"check"</span>)) {
         <span class="kwd">if</span> (<span class="kwd">new</span> <span class="cls">Wellidate</span>(<span class="kwd">this</span>).form()) {
             e.target.innerText = <span class="str">"Check name (last check was valid)";</span>

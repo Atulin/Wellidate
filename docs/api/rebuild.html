@@ -95,9 +95,9 @@ document.querySelector(<span class="str">"form"</span>).addEventListener(<span c
             let birthday = document.getElementById("birthday");
             const label = document.getElementById("birthday-label");
 
-            if (birthday) {
-                wellidate.reset();
+            wellidate.reset();
 
+            if (birthday) {
                 label.style.display = "none";
                 birthday.parentElement.removeChild(birthday);
             } else {
