@@ -69,24 +69,24 @@ title: Wellidate - accept rule
                 isValid() {
                     <span class="kwd">const</span> filter = <span class="kwd">this</span>.types.split(<span class="str">","</span>).map(type => type.trim());
 
-                    <span class="kwd">const</span> correct = [].filter.call(<span class="kwd">this</span>.element.files, file => {
+                    <span class="kwd">const</span> correct = [].filter.call(<span class="kwd">this</span> .element.files, file => {
                         <span class="kwd">const</span> extension = file.name.split(<span class="str">"."</span>).pop();
 
-                        <span class="kwd">for</span> (<span class="kwd">let</span> i = <span class="num">0</span>; i &lt; filter.length; i++) {
-                            <span class="kwd">if</span> (filter[i].indexOf(<span class="str">"."</span>) == <span class="num">0</span>) {
-                                <span class="kwd">if</span> (file.name != extension && <span class="str">"."</span> + extension == filter[i]) {
+                        <span class="kwd">for</span> (<span class="kwd">const</span> type of filter) {
+                            <span class="kwd">if</span> (type.indexOf(<span class="str">"."</span>) == <span class="num">0</span>) {
+                                <span class="kwd">if</span> (file.name != extension && <span class="str">`.</span>${extension}<span class="str">`</span> == type) {
                                     <span class="kwd">return true</span>;
                                 }
-                            } <span class="kwd">else</span> {
-                                <span class="kwd">if</span> (<span class="str">/\/\*$/</span>.test(filter[i])) {
-                                    <span class="kwd">if</span> (file.type.indexOf(filter[i].replace(<span class="str">/\*$/</span>, <span class="str">""</span>)) == <span class="num">0</span>) {
-                                        <span class="kwd">return true</span>;
-                                    }
-                                } <span class="kwd">else if</span> (file.type == filter[i]) {
+                            } <span class="kwd">else if</span> (<span class="str">/\/\*$/</span>.test(type)) {
+                                <span class="kwd">if</span> (file.type.indexOf(type.replace(<span class="str">/\*$/</span>, <span class="str">""</span>)) == <span class="num">0</span>) {
                                     <span class="kwd">return true</span>;
                                 }
+                            } <span class="kwd">else if</span> (file.type == type) {
+                                <span class="kwd">return true</span>;
                             }
                         }
+
+                        <span class="kwd">return</span> !filter.length;
                     });
 
                     <span class="kwd">return this</span>.element.files.length == correct.length;

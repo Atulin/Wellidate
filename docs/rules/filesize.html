@@ -61,7 +61,10 @@ title: Wellidate - filesize rule
                 message: <span class="str">"File size should not exceed {0} MB."</span>,
                 <span class="com">// Optional, format message in desired format.</span>
                 formatMessage() {
-                    <span class="kwd">return this</span>.message.replace(<span class="str">"{0}"</span>, (<span class="kwd">this</span>.max / <span class="kwd">this</span>.page / <span class="kwd">this</span>.page).toFixed(2));
+                    <span class="kwd">const</span> filesize = <span class="kwd">this</span>;
+                    <span class="kwd">const</span> mb = (filesize.max / filesize.page / filesize.page).toFixed(<span class="num">2</span>);
+
+                    <span class="kwd">return</span> filesize.message.replace(<span class="str">"{0}"</span>, mb.replace(<span class="str">/[.|0]*$/</span>, <span class="str">""</span>));
                 },
                 <span class="com">// Optional, filter enabled when function.</span>
                 isEnabled() {

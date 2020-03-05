@@ -54,9 +54,9 @@ title: Wellidate - length rule
         <span class="com">// Required, any valid document selector for which to apply the rules.</span>
         <span class="str">"input"</span>: {
             length: {
-                <span class="com">// Semi required, minimum number of characters that should be entered, can be ommited if max value is specified.</span>
+                <span class="com">// Required if no maximum, minimum number of characters that should be entered.</span>
                 min: <span class="num">2</span>,
-                <span class="com">// Semi required, maximum number of characters that can be entered, can be ommited if min value is specified.</span>
+                <span class="com">// Required if no minimum, maximum number of characters that can be entered.</span>
                 max: <span class="num">10</span>,
                 <span class="com">// Optional, trim value before validating.</span>
                 trim: <span class="kwd">true</span>,
@@ -72,9 +72,10 @@ title: Wellidate - length rule
                 },
                 <span class="com">// Optional, override validation.</span>
                 isValid() {
-                    <span class="kwd">const</span> value = <span class="kwd">this</span>.normalizeValue();
+                    <span class="kwd">const</span> length = <span class="kwd">this</span>;
+                    <span class="kwd">const</span> value = length.normalizeValue();
 
-                    <span class="kwd">return</span> (<span class="kwd">this</span>.min == <span class="kwd">null</span> || <span class="kwd">this</span>.min &lt;= value.length) && (value.length &lt;= <span class="kwd">this</span>.max || <span class="kwd">this</span>.max == <span class="kwd">null</span>);
+                    <span class="kwd">return</span> (length.min == <span class="kwd">null</span> || length.min &lt;= value.length) && (value.length &lt;= length.max || length.max == <span class="kwd">null</span>);
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue() {

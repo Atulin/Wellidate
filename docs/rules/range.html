@@ -72,9 +72,11 @@ title: Wellidate - range rule
                 },
                 <span class="com">// Optional, override validation.</span>
                 isValid() {
+                    <span class="kwd">const</span> min = parseFloat(<span class="kwd">this</span>.min);
+                    <span class="kwd">const</span> max = parseFloat(<span class="kwd">this</span>.max);
                     <span class="kwd">const</span> value = <span class="kwd">this</span>.normalizeValue();
 
-                    <span class="kwd">return</span> !value || (<span class="kwd">this</span>.min == null || <span class="kwd">this</span>.min &lt;= parseFloat(value)) && (parseFloat(value) &lt;= <span class="kwd">this</span>.max || <span class="kwd">this</span>.max == null);
+                    <span class="kwd">return</span> !value || (min == <span class="kwd">null</span> || min &lt;= value) && (value &lt;= max || max == <span class="kwd">null</span>);
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue() {

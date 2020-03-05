@@ -13,14 +13,6 @@ title: Wellidate - required rule
 <pre class="mb-1">
 <code>
 <div class="input-group mb-1 col-3">
-    <input type="radio" class="form-control" name="test.name" required>
-    <input type="radio" class="form-control" name="test.name" required>
-    <input type="radio" class="form-control" name="test.name" required>
-
-    <select required>
-        <option></option>
-        <option value="1">1</option>
-    </select>
     <input class="form-control" name="username" required><div class="input-group-append"><button class="input-group-text btn-success">Submit</button></div>
 </div>
 <span data-valmsg-for="username"></span>
@@ -74,7 +66,7 @@ title: Wellidate - required rule
                 },
                 <span class="com">// Optional, override validation.</span>
                 isValid() {
-                    <span class="kwd">return this</span>.normalizeValue() ? <span class="kwd">true</span> : <span class="kwd">false</span>;
+                    <span class="kwd">return new</span> <span class="cls">Boolean</span>(<span class="kwd">this</span>.normalizeValue());
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue() {

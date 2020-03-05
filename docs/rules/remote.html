@@ -72,24 +72,32 @@ title: Wellidate - remote rule
                 <span class="com">// Optional, override validation.</span>
                 isValid(validatable) {
                     <span class="kwd">const</span> remote = <span class="kwd">this</span>;
-                    <span class="kwd">if</span> (remote.request && remote.request.readyState != 4) {
-                        remote.request.abort();
+
+                    <span class="kwd">if</span> (remote.controller) {
+                        remote.controller.abort();
                     }
 
                     clearTimeout(remote.start);
-                    remote.start = setTimeout(<span class="kwd">function</span> () {
+                    remote.start = setTimeout(() => {
                         <span class="kwd">if</span> (validatable.isValid) {
-                            remote.request = <span class="kwd">new</span> XMLHttpRequest();
-                            remote.request.open(remote.type, remote.url + remote.element.value, <span class="kwd">true</span>);
-                            remote.request.setRequestHeader(<span class="str">"X-Requested-With"</span>, <span class="str">"XMLHttpRequest"</span>);
+                            remote.controller = <span class="kwd">new</span> <span class="cls">AbortController</span>();
 
-                            remote.request.onload = <span class="kwd">function</span> () {
-                                <span class="kwd">if</span> (<span class="num">200</span> &lt;= <span class="kwd">this</span>.status && <span class="kwd">this</span>.status &lt; <span class="num">400</span>) {
-                                    remote.apply(validatable, <span class="kwd">this</span>.responseText);
+                            fetch(remote.buildUrl(), {
+                                method: remote.type,
+                                headers: { <span class="str">"X-Requested-With"</span>: <span class="str">"XMLHttpRequest"</span> }
+                            }).then(response => {
+                                <span class="kwd">if</span> (validatable.isValid && response.ok) {
+                                    <span class="kwd">return</span> response.text();
                                 }
-                            };
 
-                            remote.request.send();
+                                <span class="kwd">return</span> <span class="str">""</span>;
+                            }).then(response => {
+                                <span class="kwd">if</span> (response) {
+                                    remote.apply(validatable, response);
+                                }
+                            });
+
+                            remote.prepare(validatable);
 
                             validatable.pending();
                         }

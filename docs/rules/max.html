@@ -63,7 +63,7 @@ title: Wellidate - max rule
                 message: <span class="str">"Please enter a value less than or equal to {0}."</span>,
                 <span class="com">// Optional, format message in desired format.</span>
                 formatMessage() {
-                    <span class="kwd">return this</span>.message.replace(<span class="str">"{0}"</span>, <span class="kwd">this</span>.max);
+                    <span class="kwd">return this</span>.message.replace(<span class="str">"{0}"</span>, <span class="kwd">this</span>.value);
                 },
                 <span class="com">// Optional, filter enabled when function.</span>
                 isEnabled() {
@@ -73,7 +73,7 @@ title: Wellidate - max rule
                 isValid() {
                     <span class="kwd">const</span> value = <span class="kwd">this</span>.normalizeValue();
 
-                    <span class="kwd">return</span> !value || parseFloat(value) &lt;= <span class="kwd">this</span>.max;
+                    <span class="kwd">return</span> !value || value &lt;= parseFloat(<span class="kwd">this</span>.value);
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue() {

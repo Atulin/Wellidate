@@ -73,7 +73,7 @@ title: Wellidate - equalto rule
                 isValid() {
                     <span class="kwd">const</span> other = document.getElementById(<span class="kwd">this</span>.other);
 
-                    <span class="kwd">return</span> other && <span class="kwd">this</span>.normalizeValue(<span class="kwd">this</span>.element) == <span class="kwd">this</span>.normalizeValue(other);
+                    <span class="kwd">return</span> other != <span class="kwd">null</span> && <span class="kwd">this</span>.normalizeValue(<span class="kwd">this</span>.element) == <span class="kwd">this</span>.normalizeValue(other);
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue(element) {

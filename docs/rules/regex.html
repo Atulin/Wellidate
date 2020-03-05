@@ -77,7 +77,7 @@ title: Wellidate - regex rule
                 isValid() {
                     <span class="kwd">const</span> value = <span class="kwd">this</span>.normalizeValue();
 
-                    <span class="kwd">return</span> !value || <span class="kwd">new</span> <span class="cls">RegExp</span>(<span class="kwd">this</span>.pattern).test(value);
+                    <span class="kwd">return</span> !value || !<span class="kwd">this</span>.pattern || <span class="kwd">new</span> <span class="cls">RegExp</span>(<span class="kwd">this</span>.pattern).test(value);
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue() {

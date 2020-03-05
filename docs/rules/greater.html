@@ -61,7 +61,7 @@ title: Wellidate - greater rule
                 message: <span class="str">"Please enter a value greater than {0}."</span>,
                 <span class="com">// Optional, format message in desired format.</span>
                 formatMessage() {
-                    <span class="kwd">return this</span>.message.replace(<span class="str">"{0}"</span>, <span class="kwd">this</span>.min);
+                    <span class="kwd">return this</span>.message.replace(<span class="str">"{0}"</span>, <span class="kwd">this</span>.than);
                 },
                 <span class="com">// Optional, filter enabled when function.</span>
                 isEnabled() {
@@ -71,7 +71,7 @@ title: Wellidate - greater rule
                 isValid() {
                     <span class="kwd">const</span> value = <span class="kwd">this</span>.normalizeValue();
 
-                    <span class="kwd">return</span> !value || <span class="kwd">this</span>.than &lt; parseFloat(value);
+                    <span class="kwd">return</span> !value || parseFloat(<span class="kwd">this</span>.than) &lt; value;
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue() {

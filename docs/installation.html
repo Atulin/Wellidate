@@ -20,7 +20,7 @@ title: Wellidate - installation
         <pre>
 &lt;html&gt;
     &lt;body&gt;
-<b class="install-note">+       &lt;script src="/scripts/wellidate.js"&gt;&lt;/script&gt;</b>
+<b class="install-note"><span class="diff-add">+</span>       &lt;script src="/scripts/wellidate.js"&gt;&lt;/script&gt;</b>
     &lt;/body&gt;
 &lt;/html&gt;</pre>
         <p>
@@ -33,9 +33,9 @@ title: Wellidate - installation
 
         &lt;script src="/scripts/wellidate.js"&gt;&lt;/script&gt;
         &lt;script&gt;
-<b class="install-note">+           [].forEach.call(document.getElementsByTagName("form"), form => {
-+               new Wellidate(form);
-+           });</b>
+<b class="install-note"><span class="diff-add">+</span>           [].forEach.call(document.getElementsByTagName("form"), form => {
+<span class="diff-add">+</span>               new Wellidate(form);
+<span class="diff-add">+</span>           });</b>
         &lt;/script&gt;
     &lt;/body&gt;
 &lt;/html&gt;

@@ -73,7 +73,7 @@ title: Wellidate - min rule
                 isValid() {
                     <span class="kwd">const</span> value = <span class="kwd">this</span>.normalizeValue();
 
-                    <span class="kwd">return</span> !value || <span class="kwd">this</span>.value &lt;= parseFloat(value);
+                    <span class="kwd">return</span> !value || parseFloat(<span class="kwd">this</span>.value) &lt;= value;
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue() {
