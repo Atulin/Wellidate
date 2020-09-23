@@ -7,12 +7,17 @@ Client side javascript validation library
 ### Installation
 
 Include wellidate in the page. Then initialize wellidate instance.
+Validation can be defined through native html, data attributes or javascript code.
 
 ```html
 <html>
     <body>
         <form>
-            <input required>
+            <input name="username" required maxlength="50">
+
+            <input name="email" type="email">
+
+            <input name="age" data-val-integer="Age must be an integer">
 
             <button>Submit</button>
         </form>
