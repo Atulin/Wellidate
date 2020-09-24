@@ -17,7 +17,7 @@ export interface WellidateRule {
     isValid(validatable: WellidateValidatable): boolean;
 }
 export interface WellidateRules {
-    [method: string]: WellidateRule;
+    [method: string]: WellidateRule | undefined;
 }
 export interface WellidateSummary {
     container: string;
@@ -99,7 +99,7 @@ export declare class WellidateValidatable {
 }
 export declare class Wellidate implements WellidateOptions {
     static default: WellidateDefaults;
-    private static instances;
+    private static readonly instances;
     rules: WellidateRules;
     summary: WellidateSummary;
     include: string;

@@ -162,7 +162,7 @@
             if (name) {
                 name = name.replace(/(["\]\\])/g, "\\$1");
 
-                this.errorContainers = [].map.call(document.querySelectorAll(`[data-valmsg-for="${name}"]`), container => container);
+                this.errorContainers = Array.from(document.querySelectorAll(`[data-valmsg-for="${name}"]`));
             } else {
                 this.errorContainers = [];
             }
@@ -235,7 +235,7 @@
         buildDataRules() {
             const element = this.element;
             const defaultRule = Wellidate.default.rule;
-            const attributes = [].filter.call(element.attributes, attribute => /^data-val-\w+$/.test(attribute.name));
+            const attributes = Array.from(element.attributes).filter(attribute => /^data-val-\w+$/.test(attribute.name));
 
             for (const attribute of attributes) {
                 const prefix = attribute.name;
@@ -248,11 +248,11 @@
                         isDataMessage: Boolean(attribute.value)
                     };
 
-                    [].forEach.call(element.attributes, parameter => {
-                        if (parameter.name.indexOf(`${prefix}-`) == 0) {
+                    for (const parameter of Array.from(element.attributes)) {
+                        if (parameter.name.startsWith(`${prefix}-`)) {
                             dataRule[parameter.name.substring(prefix.length + 1)] = parameter.value;
                         }
-                    });
+                    }
 
                     this.rules[method] = Object.assign({}, defaultRule, rule, dataRule, { element });
                 }
@@ -514,7 +514,7 @@
             if (group.name) {
                 const name = group.name.replace(/(["\]\\])/g, "\\$1");
 
-                return [].map.call(document.querySelectorAll(`[name="${name}"]`), element => element);
+                return Array.from(document.querySelectorAll(`[name="${name}"]`));
             }
 
             return [group];
@@ -670,10 +670,10 @@
             },
             normalizeValue(element) {
                 const input = element || this.element;
-                let { value } = input;
+                let value = input.value;
 
                 if (input.tagName == "SELECT" && input.multiple) {
-                    return [].filter.call(input.options, option => option.selected).length.toString();
+                    return Array.from(input.options).filter(option => option.selected).length.toString();
                 } else if (input.type == "radio") {
                     if (input.name) {
                         const name = input.name.replace(/(["\]\\])/g, "\\$1");
@@ -772,14 +772,14 @@
 
                     if (isValid && value && precision > 0) {
                         number.isValidPrecision = number.digits(value.split(".")[0].replace(/^[-+,0]+/, "")) <= precision - (scale || 0);
-                        isValid = isValid && number.isValidPrecision;
+                        isValid = number.isValidPrecision;
                     } else {
                         number.isValidPrecision = true;
                     }
 
                     if (isValid && value.indexOf(".") >= 0 && scale >= 0) {
                         number.isValidScale = number.digits(value.split(".")[1].replace(/0+$/, "")) <= scale;
-                        isValid = isValid && number.isValidScale;
+                        isValid = number.isValidScale;
                     } else {
                         number.isValidScale = true;
                     }
@@ -893,7 +893,7 @@
                 page: 1024,
                 message: "File size should not exceed {0} MB.",
                 isValid() {
-                    const size = [].reduce.call(this.element.files, (total, file) => total + file.size, 0);
+                    const size = Array.from(this.element.files).reduce((total, file) => total + file.size, 0);
 
                     return size <= this.max || this.max == null;
                 },
@@ -909,16 +909,16 @@
                 isValid() {
                     const filter = this.types.split(",").map(type => type.trim());
 
-                    const correct = [].filter.call(this.element.files, file => {
+                    const correct = Array.from(this.element.files).filter(file => {
                         const extension = file.name.split(".").pop();
 
                         for (const type of filter) {
-                            if (type.indexOf(".") == 0) {
+                            if (type.startsWith(".")) {
                                 if (file.name != extension && `.${extension}` == type) {
                                     return true;
                                 }
-                            } else if (/\/\*$/.test(type)) {
-                                if (file.type.indexOf(type.replace(/\*$/, "")) == 0) {
+                            } else if (type.endsWith("/*")) {
+                                if (file.type.startsWith(type.replace(/\*$/, ""))) {
                                     return true;
                                 }
                             } else if (file.type == type) {
