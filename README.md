@@ -1,9 +1,9 @@
 Client side javascript validation library
 
-![Semantic](https://img.shields.io/badge/sem-ver-lightgrey.svg?style=plastic)
-![Npm](https://img.shields.io/npm/v/wellidate.svg?style=plastic)
-![License](https://img.shields.io/badge/license-MIT-green.svg?style=plastic)
-
+[![License](https://img.shields.io/badge/license-MIT-green.svg?style=plastic)](https://opensource.org/licenses/MIT)
+[![Semantic](https://img.shields.io/badge/sem-ver-lightgrey.svg?style=plastic)](https://semver.org/)
+[![Npm](https://img.shields.io/npm/v/wellidate.svg?style=plastic)](https://www.npmjs.com/package/wellidate)
+[![Tip](https://img.shields.io/badge/tip-paypal-blue.svg?style=plastic&logo=paypal)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=CGQTQRG8AADYE&source=url)
 ### Installation
 
 Include wellidate in the page. Then initialize wellidate instance.
