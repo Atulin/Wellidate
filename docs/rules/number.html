@@ -56,6 +56,10 @@ title: Wellidate - number rule
             number: {
                 <span class="com">// Optional, trim value before validating.</span>
                 trim: <span class="kwd">true</span>,
+                <span class="com">// Optional, group separator of a number.</span>
+                groupSeparator: <span class="str">","</span>,
+                <span class="com">// Optional, decimal separator of a number.</span>
+                decimalSeparator: <span class="str">"."</span>,
                 <span class="com">// Optional, failed validation message.</span>
                 message: <span class="str">"Please enter a valid number."</span>,
                 <span class="com">// Optional, failed scale validation message.</span>
@@ -72,7 +76,7 @@ title: Wellidate - number rule
                 },
                 <span class="com">// Optional, override validation.</span>
                 isValid() {
-                    <span class="kwd">return</span> <span class="str">/^$|^[+-]?(\d+|\d{1,3}(,\d{3})+)?(\.\d+)?$/</span>.test(<span class="kwd">this</span>.normalizeValue());
+                    <span class="kwd">return</span> <span class="str">/^$|^[+-]?(\d*|\d[0-9,]*)\.?\d*$/</span>.test(<span class="kwd">this</span>.normalizeValue());
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue() {

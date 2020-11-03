@@ -760,6 +760,8 @@
                 }
             },
             number: {
+                groupSeparator: ",",
+                decimalSeparator: ".",
                 message: "Please enter a valid number.",
                 scaleMessage: "Please enter a value with no more than {0} fractional digits",
                 precisionMessage: "Please enter a value using no more than {0} significant digits",
@@ -768,17 +770,22 @@
                     const scale = parseInt(number.scale);
                     const value = number.normalizeValue();
                     const precision = parseInt(number.precision);
-                    let isValid = /^$|^[+-]?(\d*|\d[0-9,]*)\.?\d*$/.test(value);
+                    const parts = value.split(this.decimalSeparator);
+                    let isValid = new RegExp(`^$|^[+-]?(\\d*|\\d[0-9${this.groupSeparator}]*)[${this.decimalSeparator}]?\\d*$`).test(value);
 
                     if (isValid && value && precision > 0) {
-                        number.isValidPrecision = number.digits(value.split(".")[0].replace(/^[-+,0]+/, "")) <= precision - (scale || 0);
+                        const digits = number.digits(parts[0].replace(new RegExp(`^[-+${this.groupSeparator}0]+`), ""));
+
+                        number.isValidPrecision = digits <= precision - (scale || 0);
                         isValid = number.isValidPrecision;
                     } else {
                         number.isValidPrecision = true;
                     }
 
-                    if (isValid && value.indexOf(".") >= 0 && scale >= 0) {
-                        number.isValidScale = number.digits(value.split(".")[1].replace(/0+$/, "")) <= scale;
+                    if (isValid && parts[1] && scale >= 0) {
+                        const digits = number.digits(parts[1].replace(/0+$/, ""));
+
+                        number.isValidScale = digits <= scale;
                         isValid = number.isValidScale;
                     } else {
                         number.isValidScale = true;
