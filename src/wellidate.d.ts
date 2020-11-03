@@ -1,5 +1,5 @@
 /*!
- * Wellidate 2.0.0
+ * Wellidate 2.1.0
  * https://github.com/NonFactors/Wellidate
  *
  * Copyright © NonFactors

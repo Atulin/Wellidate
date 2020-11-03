@@ -1,5 +1,5 @@
 /*!
- * Wellidate 2.0.0
+ * Wellidate 2.1.0
  * https://github.com/NonFactors/Wellidate
  *
  * Copyright © NonFactors
@@ -560,7 +560,7 @@ export class Wellidate implements WellidateOptions {
                     const scale = parseInt(number.scale);
                     const value = number.normalizeValue();
                     const precision = parseInt(number.precision);
-                    let isValid = /^$|^[+-]?(\d+|\d{1,3}(,\d{3})+)?(\.\d+)?$/.test(value);
+                    let isValid = /^$|^[+-]?(\d*|\d[0-9,]*)\.?\d*$/.test(value);
 
                     if (isValid && value && precision > 0) {
                         number.isValidPrecision = number.digits(value.split(".")[0].replace(/^[-+,0]+/, "")) <= precision - (scale || 0);

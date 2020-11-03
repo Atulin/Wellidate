@@ -4,7 +4,7 @@
     "module": "UMD",
     "lib": [
       "DOM.Iterable",
-      "ES6",
+      "ES2015",
       "DOM"
     ],
     "alwaysStrict": true,
