@@ -85,17 +85,20 @@ export declare class WellidateValidatable {
     element: HTMLInputElement;
     elements: HTMLInputElement[];
     errorContainers: HTMLElement[];
+    bindings: ((this: HTMLInputElement) => void)[];
     constructor(wellidate: Wellidate, group: HTMLInputElement[]);
     validate(): boolean;
     reset(message?: string): void;
     pending(message?: string): void;
     success(message?: string): void;
     error(method: string | null, message?: string): void;
+    dispose(): void;
     private buildErrorContainers;
     private buildInputRules;
     private buildDataRules;
     private build;
     private bind;
+    private unbind;
 }
 export declare class Wellidate implements WellidateOptions {
     static default: WellidateDefaults;
