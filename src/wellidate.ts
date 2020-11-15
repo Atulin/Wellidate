@@ -16,7 +16,7 @@ export interface WellidateRule {
     isEnabled(): boolean;
     formatMessage(): string;
     normalizeValue(element?: HTMLElement): string;
-    isValid(validatable: WellidateValidatable): boolean;
+    isValid(validatable: WellidateValidatable): boolean | Promise<boolean>;
 }
 
 export interface WellidateRules {
@@ -38,6 +38,14 @@ export interface WellidateResults {
         method: string;
         message: string;
         validatable: WellidateValidatable;
+    }[];
+
+    pending: {
+        validatable: WellidateValidatable;
+        rules: {
+            method: string;
+            promise: Promise<boolean>;
+        }[];
     }[];
 
     valid: {
@@ -447,6 +455,7 @@ export class Wellidate implements WellidateOptions {
             reset() {
                 this.show({
                     isValid: true,
+                    pending: [],
                     invalid: [],
                     valid: []
                 });
@@ -773,27 +782,38 @@ export class Wellidate implements WellidateOptions {
                     }
 
                     clearTimeout(remote.start);
-                    remote.start = setTimeout(() => {
-                        if (validatable.isValid) {
-                            remote.controller = new AbortController();
 
-                            remote.prepare(validatable).then((response: Response) => {
-                                if (validatable.isValid && response.ok) {
-                                    return response.text();
-                                }
+                    return new Promise<boolean>((resolve, reject) => {
+                        remote.start = setTimeout(() => {
+                            if (validatable.isValid) {
+                                remote.controller = new AbortController();
 
-                                return "";
-                            }).then((response: string) => {
-                                if (response) {
-                                    remote.apply(validatable, response);
-                                }
-                            });
+                                remote.prepare(validatable).then((response: Response) => {
+                                    if (validatable.isValid && response.ok) {
+                                        return response.text();
+                                    }
 
-                            validatable.pending();
-                        }
-                    }, 1);
+                                    return "";
+                                }).then((response: string) => {
+                                    if (response) {
+                                        resolve(remote.apply(validatable, response));
+                                    } else {
+                                        resolve(true);
+                                    }
+                                }).catch((reason: any) => {
+                                    if (reason.name == "AbortError") {
+                                        resolve(true);
+                                    }
 
-                    return true;
+                                    reject(reason);
+                                });
+
+                                validatable.pending();
+                            } else {
+                                resolve(true);
+                            }
+                        }, 1);
+                    });
                 },
                 buildUrl() {
                     const remote = this;
@@ -1000,38 +1020,54 @@ export class Wellidate implements WellidateOptions {
         }
     }
     public validate(...filter: string[]) {
-        const valid = [];
-        const invalid = [];
+        const results: WellidateResults = {
+            isValid: true,
+            pending: [],
+            invalid: [],
+            valid: []
+        };
 
         for (const validatable of this.filterValidatables(...filter)) {
+            const rules = [];
+
             validatable.isValid = true;
 
             for (const method of Object.keys(validatable.rules)) {
                 const rule = validatable.rules[method]!;
 
-                if (rule.isEnabled() && !rule.isValid(validatable)) {
-                    invalid.push({
-                        message: rule.formatMessage(),
-                        validatable: validatable,
-                        method: method
-                    });
+                if (rule.isEnabled()) {
+                    const isValid = rule.isValid(validatable);
 
-                    validatable.isValid = false;
+                    if (isValid === false) {
+                        results.invalid.push({
+                            message: rule.formatMessage(),
+                            validatable: validatable,
+                            method: method
+                        });
 
-                    break;
+                        validatable.isValid = false;
+                        results.isValid = false;
+
+                        break;
+                    } else if (typeof isValid != "boolean") {
+                        rules.push({ method: method, promise: isValid });
+
+                        if (!results.pending.some(rule => rule.validatable == validatable)) {
+                            results.pending.push({
+                                validatable: validatable,
+                                rules: rules
+                            });
+                        }
+                    }
                 }
             }
 
             if (validatable.isValid) {
-                valid.push({ validatable });
+                results.valid.push({ validatable });
             }
         }
 
-        return {
-            isValid: !invalid.length,
-            invalid: invalid,
-            valid: valid
-        } as WellidateResults;
+        return results;
     }
     public reset() {
         const wellidate = this;

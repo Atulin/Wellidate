@@ -457,38 +457,54 @@
             }
         }
         validate(...filter) {
-            const valid = [];
-            const invalid = [];
+            const results = {
+                isValid: true,
+                pending: [],
+                invalid: [],
+                valid: []
+            };
 
             for (const validatable of this.filterValidatables(...filter)) {
+                const rules = [];
+
                 validatable.isValid = true;
 
                 for (const method of Object.keys(validatable.rules)) {
                     const rule = validatable.rules[method];
 
-                    if (rule.isEnabled() && !rule.isValid(validatable)) {
-                        invalid.push({
-                            message: rule.formatMessage(),
-                            validatable: validatable,
-                            method: method
-                        });
+                    if (rule.isEnabled()) {
+                        const isValid = rule.isValid(validatable);
 
-                        validatable.isValid = false;
+                        if (isValid === false) {
+                            results.invalid.push({
+                                message: rule.formatMessage(),
+                                validatable: validatable,
+                                method: method
+                            });
 
-                        break;
+                            validatable.isValid = false;
+                            results.isValid = false;
+
+                            break;
+                        } else if (typeof isValid != "boolean") {
+                            rules.push({ method: method, promise: isValid });
+
+                            if (!results.pending.some(rule => rule.validatable == validatable)) {
+                                results.pending.push({
+                                    validatable: validatable,
+                                    rules: rules
+                                });
+                            }
+                        }
                     }
                 }
 
                 if (validatable.isValid) {
-                    valid.push({ validatable });
+                    results.valid.push({ validatable });
                 }
             }
 
-            return {
-                isValid: !invalid.length,
-                invalid: invalid,
-                valid: valid
-            };
+            return results;
         }
 
         reset() {
@@ -655,6 +671,7 @@
             reset() {
                 this.show({
                     isValid: true,
+                    pending: [],
                     invalid: [],
                     valid: []
                 });
@@ -981,27 +998,38 @@
                     }
 
                     clearTimeout(remote.start);
-                    remote.start = setTimeout(() => {
-                        if (validatable.isValid) {
-                            remote.controller = new AbortController();
 
-                            remote.prepare(validatable).then(response => {
-                                if (validatable.isValid && response.ok) {
-                                    return response.text();
-                                }
+                    return new Promise((resolve, reject) => {
+                        remote.start = setTimeout(() => {
+                            if (validatable.isValid) {
+                                remote.controller = new AbortController();
 
-                                return "";
-                            }).then(response => {
-                                if (response) {
-                                    remote.apply(validatable, response);
-                                }
-                            });
+                                remote.prepare(validatable).then(response => {
+                                    if (validatable.isValid && response.ok) {
+                                        return response.text();
+                                    }
 
-                            validatable.pending();
-                        }
-                    }, 1);
+                                    return "";
+                                }).then(response => {
+                                    if (response) {
+                                        resolve(remote.apply(validatable, response));
+                                    } else {
+                                        resolve(true);
+                                    }
+                                }).catch(reason => {
+                                    if (reason.name == "AbortError") {
+                                        resolve(true);
+                                    }
 
-                    return true;
+                                    reject(reason);
+                                });
+
+                                validatable.pending();
+                            } else {
+                                resolve(true);
+                            }
+                        }, 1);
+                    });
                 },
                 buildUrl() {
                     const remote = this;

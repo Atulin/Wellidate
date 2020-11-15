@@ -14,7 +14,7 @@ export interface WellidateRule {
     isEnabled(): boolean;
     formatMessage(): string;
     normalizeValue(element?: HTMLElement): string;
-    isValid(validatable: WellidateValidatable): boolean;
+    isValid(validatable: WellidateValidatable): boolean | Promise<boolean>;
 }
 export interface WellidateRules {
     [method: string]: WellidateRule | undefined;
@@ -30,6 +30,13 @@ export interface WellidateResults {
         method: string;
         message: string;
         validatable: WellidateValidatable;
+    }[];
+    pending: {
+        validatable: WellidateValidatable;
+        rules: {
+            method: string;
+            promise: Promise<boolean>;
+        }[];
     }[];
     valid: {
         validatable: WellidateValidatable;
