@@ -777,22 +777,17 @@ export class Wellidate implements WellidateOptions {
                         if (validatable.isValid) {
                             remote.controller = new AbortController();
 
-                            fetch(remote.buildUrl(), {
-                                method: remote.type,
-                                headers: { "X-Requested-With": "XMLHttpRequest" }
-                            }).then(response => {
+                            remote.prepare(validatable).then((response: Response) => {
                                 if (validatable.isValid && response.ok) {
                                     return response.text();
                                 }
 
                                 return "";
-                            }).then(response => {
+                            }).then((response: string) => {
                                 if (response) {
                                     remote.apply(validatable, response);
                                 }
                             });
-
-                            remote.prepare(validatable);
 
                             validatable.pending();
                         }
@@ -816,6 +811,10 @@ export class Wellidate implements WellidateOptions {
                     return url.href;
                 },
                 prepare() {
+                    return fetch(this.buildUrl(), {
+                        method: this.type,
+                        headers: { "X-Requested-With": "XMLHttpRequest" }
+                    });
                 },
                 apply(validatable: WellidateValidatable, response: string) {
                     const result = JSON.parse(response);

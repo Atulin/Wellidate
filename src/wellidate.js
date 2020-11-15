@@ -985,10 +985,7 @@
                         if (validatable.isValid) {
                             remote.controller = new AbortController();
 
-                            fetch(remote.buildUrl(), {
-                                method: remote.type,
-                                headers: { "X-Requested-With": "XMLHttpRequest" }
-                            }).then(response => {
+                            remote.prepare(validatable).then(response => {
                                 if (validatable.isValid && response.ok) {
                                     return response.text();
                                 }
@@ -999,8 +996,6 @@
                                     remote.apply(validatable, response);
                                 }
                             });
-
-                            remote.prepare(validatable);
 
                             validatable.pending();
                         }
@@ -1024,6 +1019,10 @@
                     return url.href;
                 },
                 prepare() {
+                    return fetch(this.buildUrl(), {
+                        method: this.type,
+                        headers: { "X-Requested-With": "XMLHttpRequest" }
+                    });
                 },
                 apply(validatable, response) {
                     const result = JSON.parse(response);
