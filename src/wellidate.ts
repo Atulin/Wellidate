@@ -813,6 +813,7 @@ export class Wellidate implements WellidateOptions {
                 prepare() {
                     return fetch(this.buildUrl(), {
                         method: this.type,
+                        signal: this.controller.signal,
                         headers: { "X-Requested-With": "XMLHttpRequest" }
                     });
                 },
