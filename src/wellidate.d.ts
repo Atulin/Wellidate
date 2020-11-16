@@ -99,13 +99,11 @@ export declare class WellidateValidatable {
     pending(message?: string): void;
     success(message?: string): void;
     error(method: string | null, message?: string): void;
-    dispose(): void;
+    bind(): void;
+    unbind(): void;
     private buildErrorContainers;
     private buildInputRules;
     private buildDataRules;
-    private build;
-    private bind;
-    private unbind;
 }
 export declare class Wellidate implements WellidateOptions {
     static default: WellidateDefaults;

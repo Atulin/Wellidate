@@ -131,8 +131,9 @@ export class WellidateValidatable {
         validatable.element = group[0];
         validatable.wellidate = wellidate;
 
-        validatable.build();
-        validatable.bind();
+        validatable.buildErrorContainers();
+        validatable.buildInputRules();
+        validatable.buildDataRules();
     }
 
     public validate() {
@@ -260,8 +261,47 @@ export class WellidateValidatable {
         }));
     }
 
-    public dispose() {
-        this.unbind();
+    public bind() {
+        const validatable = this;
+        const wellidate = this.wellidate;
+        const input = validatable.element;
+        const event = input.tagName == "SELECT" || input.type == "hidden" ? "change" : "input";
+
+        const changeEvent = function (this: HTMLInputElement) {
+            if (this.type == "hidden" || validatable.isDirty) {
+                validatable.validate();
+            }
+        };
+        const blurEvent = function (this: HTMLInputElement) {
+            if (validatable.isDirty || this.value.length) {
+                validatable.isDirty = !validatable.validate();
+            }
+        };
+        const focusEvent = function (this: HTMLInputElement) {
+            if (wellidate.focusCleanup) {
+                validatable.reset();
+            }
+
+            wellidate.lastActive = this;
+        };
+
+        for (const element of validatable.elements) {
+            element.addEventListener("blur", blurEvent);
+            element.addEventListener(event, changeEvent);
+            element.addEventListener("focus", focusEvent);
+        }
+
+        validatable.bindings.push(blurEvent, changeEvent, focusEvent);
+    }
+    public unbind() {
+        for (const binding of this.bindings) {
+            for (const element of this.elements) {
+                element.removeEventListener("blur", binding);
+                element.removeEventListener("focus", binding);
+                element.removeEventListener("input", binding);
+                element.removeEventListener("change", binding);
+            }
+        }
     }
 
     private buildErrorContainers() {
@@ -363,54 +403,6 @@ export class WellidateValidatable {
                 }
 
                 this.rules[method] = Object.assign({}, defaultRule, rule, dataRule, { element });
-            }
-        }
-    }
-    private build() {
-        this.buildErrorContainers();
-        this.buildInputRules();
-        this.buildDataRules();
-    }
-
-    private bind() {
-        const validatable = this;
-        const wellidate = this.wellidate;
-        const input = validatable.element;
-        const event = input.tagName == "SELECT" || input.type == "hidden" ? "change" : "input";
-
-        const changeEvent = function (this: HTMLInputElement) {
-            if (this.type == "hidden" || validatable.isDirty) {
-                validatable.validate();
-            }
-        };
-        const blurEvent = function (this: HTMLInputElement) {
-            if (validatable.isDirty || this.value.length) {
-                validatable.isDirty = !validatable.validate();
-            }
-        };
-        const focusEvent = function (this: HTMLInputElement) {
-            if (wellidate.focusCleanup) {
-                validatable.reset();
-            }
-
-            wellidate.lastActive = this;
-        };
-
-        for (const element of validatable.elements) {
-            element.addEventListener("blur", blurEvent);
-            element.addEventListener(event, changeEvent);
-            element.addEventListener("focus", focusEvent);
-        }
-
-        validatable.bindings.push(blurEvent, changeEvent, focusEvent);
-    }
-    private unbind() {
-        for (const binding of this.bindings) {
-            for (const element of this.elements) {
-                element.removeEventListener("blur", binding);
-                element.removeEventListener("focus", binding);
-                element.removeEventListener("input", binding);
-                element.removeEventListener("change", binding);
             }
         }
     }
@@ -947,23 +939,30 @@ export class Wellidate implements WellidateOptions {
 
     public rebuild() {
         const wellidate = this;
+        const validatables = [];
 
-        wellidate.validatables.forEach(validatable => validatable.dispose());
-        wellidate.validatables = [];
+        wellidate.validatables.forEach(validatable => validatable.unbind());
 
         if (wellidate.container.matches(wellidate.include)) {
             const group = wellidate.buildGroupElements(wellidate.container) as HTMLInputElement[];
+            const validatable = wellidate.validatables.find(validatable => validatable.element == group[0]);
 
-            wellidate.validatables.push(new WellidateValidatable(wellidate, group));
+            validatables.push(validatable || new WellidateValidatable(wellidate, group));
+            validatables[validatables.length - 1].bind();
         } else {
             for (const element of wellidate.container.querySelectorAll<HTMLElement>(wellidate.include)) {
                 const group = wellidate.buildGroupElements(element) as HTMLInputElement[];
 
                 if (element == group[0]) {
-                    wellidate.validatables.push(new WellidateValidatable(wellidate, group));
+                    const validatable = wellidate.validatables.find(validatable => validatable.element == element);
+
+                    validatables.push(validatable || new WellidateValidatable(wellidate, group));
+                    validatables[validatables.length - 1].bind();
                 }
             }
         }
+
+        wellidate.validatables = validatables;
     }
     public form(...filter: string[]) {
         const wellidate = this;

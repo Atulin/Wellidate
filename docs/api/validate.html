@@ -80,6 +80,17 @@ return: <span class="com">validation result in format</span>
             validatable: <span class="kwd">object</span>
         }
     ],
+    pending: [
+        {
+            validatable: <span class="kwd">object</span>
+            rules: [
+                {
+                    method: <span class="kwd">string</span>,
+                    promise: <span class="cls">Promise</span>&lt;<span class="kwd">boolean</span>&gt;
+                }
+            ]
+        }
+    ],
     invalid: [
         {
             method: <span class="kwd">string</span>,

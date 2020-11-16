@@ -78,39 +78,66 @@ title: Wellidate - remote rule
                     }
 
                     clearTimeout(remote.start);
-                    remote.start = setTimeout(() => {
-                        <span class="kwd">if</span> (validatable.isValid) {
-                            remote.controller = <span class="kwd">new</span> <span class="cls">AbortController</span>();
 
-                            fetch(remote.buildUrl(), {
-                                method: remote.type,
-                                headers: { <span class="str">"X-Requested-With"</span>: <span class="str">"XMLHttpRequest"</span> }
-                            }).then(response => {
-                                <span class="kwd">if</span> (validatable.isValid && response.ok) {
-                                    <span class="kwd">return</span> response.text();
-                                }
+                    <span class="kwd">return new</span> <span class="cls">Promise</span>((resolve, reject) => {
+                        remote.start = setTimeout(() => {
+                            <span class="kwd">if</span> (validatable.isValid) {
+                                remote.controller = <span class="kwd">new</span> <span class="cls">AbortController</span>();
 
-                                <span class="kwd">return</span> <span class="str">""</span>;
-                            }).then(response => {
-                                <span class="kwd">if</span> (response) {
-                                    remote.apply(validatable, response);
-                                }
-                            });
+                                remote.prepare(validatable).then(response => {
+                                    <span class="kwd">if</span> (validatable.isValid && response.ok) {
+                                        <span class="kwd">return</span> response.text();
+                                    }
 
-                            remote.prepare(validatable);
+                                    <span class="kwd">return</span> <span class="str">""</span>;
+                                }).then(response => {
+                                    <span class="kwd">if</span> (response) {
+                                        resolve(remote.apply(validatable, response));
+                                    } <span class="kwd">else</span> {
+                                        resolve(<span class="kwd">true</span>);
+                                    }
+                                }).catch(reason => {
+                                    <span class="kwd">if</span> (reason.name == <span class="str">"AbortError"</span>) {
+                                        resolve(<span class="kwd">true</span>);
+                                    }
 
-                            validatable.pending();
-                        }
-                    }, <span class="num">1</span>);
+                                    reject(reason);
+                                });
 
-                    <span class="kwd">return true</span>;
+                                validatable.pending();
+                            } <span class="kwd">else</span> {
+                                resolve(<span class="kwd">true</span>);
+                            }
+                        }, <span class="num">1</span>);
+                    });
                 },
                 <span class="com">// Optional, override value normalization for the rule.</span>
                 normalizeValue() {
                     <span class="kwd">return this</span>.trim ? <span class="kwd">this</span>.element.value.trim() : <span class="kwd">this</span>.element.value;
                 },
+                <span class="com">// Optional, override final remote url building.</span>
+                buildUrl() {
+                    <span class="kwd">const</span> remote = <span class="kwd">this</span>;
+                    <span class="kwd">const</span> url = <span class="kwd">new</span> <span class="cls">URL</span>(remote.url, location.href);
+                    <span class="kwd">const</span> fields = (remote.additionalFields || <span class="str">""</span>).split(<span class="str">","</span>).filter(<span class="cls">Boolean</span>);
+
+                    <span class="kwd">for</span> (<span class="kwd">const</span> field <span class="kwd">of</span> fields) {
+                        <span class="kwd">const</span> element = document.querySelector(field);
+
+                        url.searchParams.append(element.name, remote.normalizeValue(element) || <span class="str">""</span>);
+                    }
+
+                    url.searchParams.append(remote.element.name, remote.normalizeValue() || <span class="str">""</span>);
+
+                    <span class="kwd">return</span> url.href;
+                },
                 <span class="com">// Optional, prepare request with any request changes (headers, callbacks, etc).</span>
                 prepare(validatable) {
+                    <span class="kwd">return</span> fetch(<span class="kwd">this</span>.buildUrl(), {
+                        method: <span class="kwd">this</span>.type,
+                        signal: <span class="kwd">this</span>.controller.signal,
+                        headers: { <span class="str">"X-Requested-With"</span>: <span class="str">"XMLHttpRequest"</span> }
+                    });
                 },
                 <span class="com">// Optional, override remote response processing.</span>
                 apply(validatable, response) {

@@ -28,8 +28,9 @@
             validatable.element = group[0];
             validatable.wellidate = wellidate;
 
-            validatable.build();
-            validatable.bind();
+            validatable.buildErrorContainers();
+            validatable.buildInputRules();
+            validatable.buildDataRules();
         }
 
         validate() {
@@ -157,8 +158,47 @@
             }));
         }
 
-        dispose() {
-            this.unbind();
+        bind() {
+            const validatable = this;
+            const wellidate = this.wellidate;
+            const input = validatable.element;
+            const event = input.tagName == "SELECT" || input.type == "hidden" ? "change" : "input";
+
+            const changeEvent = function () {
+                if (this.type == "hidden" || validatable.isDirty) {
+                    validatable.validate();
+                }
+            };
+            const blurEvent = function () {
+                if (validatable.isDirty || this.value.length) {
+                    validatable.isDirty = !validatable.validate();
+                }
+            };
+            const focusEvent = function () {
+                if (wellidate.focusCleanup) {
+                    validatable.reset();
+                }
+
+                wellidate.lastActive = this;
+            };
+
+            for (const element of validatable.elements) {
+                element.addEventListener("blur", blurEvent);
+                element.addEventListener(event, changeEvent);
+                element.addEventListener("focus", focusEvent);
+            }
+
+            validatable.bindings.push(blurEvent, changeEvent, focusEvent);
+        }
+        unbind() {
+            for (const binding of this.bindings) {
+                for (const element of this.elements) {
+                    element.removeEventListener("blur", binding);
+                    element.removeEventListener("focus", binding);
+                    element.removeEventListener("input", binding);
+                    element.removeEventListener("change", binding);
+                }
+            }
         }
 
         buildErrorContainers() {
@@ -263,54 +303,6 @@
                 }
             }
         }
-        build() {
-            this.buildErrorContainers();
-            this.buildInputRules();
-            this.buildDataRules();
-        }
-
-        bind() {
-            const validatable = this;
-            const wellidate = this.wellidate;
-            const input = validatable.element;
-            const event = input.tagName == "SELECT" || input.type == "hidden" ? "change" : "input";
-
-            const changeEvent = function () {
-                if (this.type == "hidden" || validatable.isDirty) {
-                    validatable.validate();
-                }
-            };
-            const blurEvent = function () {
-                if (validatable.isDirty || this.value.length) {
-                    validatable.isDirty = !validatable.validate();
-                }
-            };
-            const focusEvent = function () {
-                if (wellidate.focusCleanup) {
-                    validatable.reset();
-                }
-
-                wellidate.lastActive = this;
-            };
-
-            for (const element of validatable.elements) {
-                element.addEventListener("blur", blurEvent);
-                element.addEventListener(event, changeEvent);
-                element.addEventListener("focus", focusEvent);
-            }
-
-            validatable.bindings.push(blurEvent, changeEvent, focusEvent);
-        }
-        unbind() {
-            for (const binding of this.bindings) {
-                for (const element of this.elements) {
-                    element.removeEventListener("blur", binding);
-                    element.removeEventListener("focus", binding);
-                    element.removeEventListener("input", binding);
-                    element.removeEventListener("change", binding);
-                }
-            }
-        }
     }
 
     class Wellidate {
@@ -384,23 +376,30 @@
 
         rebuild() {
             const wellidate = this;
+            const validatables = [];
 
-            wellidate.validatables.forEach(validatable => validatable.dispose());
-            wellidate.validatables = [];
+            wellidate.validatables.forEach(validatable => validatable.unbind());
 
             if (wellidate.container.matches(wellidate.include)) {
                 const group = wellidate.buildGroupElements(wellidate.container);
+                const validatable = wellidate.validatables.find(validatable => validatable.element == group[0]);
 
-                wellidate.validatables.push(new WellidateValidatable(wellidate, group));
+                validatables.push(validatable || new WellidateValidatable(wellidate, group));
+                validatables[validatables.length - 1].bind();
             } else {
                 for (const element of wellidate.container.querySelectorAll(wellidate.include)) {
                     const group = wellidate.buildGroupElements(element);
 
                     if (element == group[0]) {
-                        wellidate.validatables.push(new WellidateValidatable(wellidate, group));
+                        const validatable = wellidate.validatables.find(validatable => validatable.element == element);
+
+                        validatables.push(validatable || new WellidateValidatable(wellidate, group));
+                        validatables[validatables.length - 1].bind();
                     }
                 }
             }
+
+            wellidate.validatables = validatables;
         }
         form(...filter) {
             const wellidate = this;

@@ -28,8 +28,9 @@
             validatable.element = group[0];
             validatable.wellidate = wellidate;
 
-            validatable.build();
-            validatable.bind();
+            validatable.buildErrorContainers();
+            validatable.buildInputRules();
+            validatable.buildDataRules();
         }
 
         validate() {
@@ -157,8 +158,47 @@
             }));
         }
 
-        dispose() {
-            this.unbind();
+        bind() {
+            const validatable = this;
+            const wellidate = this.wellidate;
+            const input = validatable.element;
+            const event = input.tagName == "SELECT" || input.type == "hidden" ? "change" : "input";
+
+            const changeEvent = function () {
+                if (this.type == "hidden" || validatable.isDirty) {
+                    validatable.validate();
+                }
+            };
+            const blurEvent = function () {
+                if (validatable.isDirty || this.value.length) {
+                    validatable.isDirty = !validatable.validate();
+                }
+            };
+            const focusEvent = function () {
+                if (wellidate.focusCleanup) {
+                    validatable.reset();
+                }
+
+                wellidate.lastActive = this;
+            };
+
+            for (const element of validatable.elements) {
+                element.addEventListener("blur", blurEvent);
+                element.addEventListener(event, changeEvent);
+                element.addEventListener("focus", focusEvent);
+            }
+
+            validatable.bindings.push(blurEvent, changeEvent, focusEvent);
+        }
+        unbind() {
+            for (const binding of this.bindings) {
+                for (const element of this.elements) {
+                    element.removeEventListener("blur", binding);
+                    element.removeEventListener("focus", binding);
+                    element.removeEventListener("input", binding);
+                    element.removeEventListener("change", binding);
+                }
+            }
         }
 
         buildErrorContainers() {
@@ -263,54 +303,6 @@
                 }
             }
         }
-        build() {
-            this.buildErrorContainers();
-            this.buildInputRules();
-            this.buildDataRules();
-        }
-
-        bind() {
-            const validatable = this;
-            const wellidate = this.wellidate;
-            const input = validatable.element;
-            const event = input.tagName == "SELECT" || input.type == "hidden" ? "change" : "input";
-
-            const changeEvent = function () {
-                if (this.type == "hidden" || validatable.isDirty) {
-                    validatable.validate();
-                }
-            };
-            const blurEvent = function () {
-                if (validatable.isDirty || this.value.length) {
-                    validatable.isDirty = !validatable.validate();
-                }
-            };
-            const focusEvent = function () {
-                if (wellidate.focusCleanup) {
-                    validatable.reset();
-                }
-
-                wellidate.lastActive = this;
-            };
-
-            for (const element of validatable.elements) {
-                element.addEventListener("blur", blurEvent);
-                element.addEventListener(event, changeEvent);
-                element.addEventListener("focus", focusEvent);
-            }
-
-            validatable.bindings.push(blurEvent, changeEvent, focusEvent);
-        }
-        unbind() {
-            for (const binding of this.bindings) {
-                for (const element of this.elements) {
-                    element.removeEventListener("blur", binding);
-                    element.removeEventListener("focus", binding);
-                    element.removeEventListener("input", binding);
-                    element.removeEventListener("change", binding);
-                }
-            }
-        }
     }
 
     class Wellidate {
@@ -384,23 +376,30 @@
 
         rebuild() {
             const wellidate = this;
+            const validatables = [];
 
-            wellidate.validatables.forEach(validatable => validatable.dispose());
-            wellidate.validatables = [];
+            wellidate.validatables.forEach(validatable => validatable.unbind());
 
             if (wellidate.container.matches(wellidate.include)) {
                 const group = wellidate.buildGroupElements(wellidate.container);
+                const validatable = wellidate.validatables.find(validatable => validatable.element == group[0]);
 
-                wellidate.validatables.push(new WellidateValidatable(wellidate, group));
+                validatables.push(validatable || new WellidateValidatable(wellidate, group));
+                validatables[validatables.length - 1].bind();
             } else {
                 for (const element of wellidate.container.querySelectorAll(wellidate.include)) {
                     const group = wellidate.buildGroupElements(element);
 
                     if (element == group[0]) {
-                        wellidate.validatables.push(new WellidateValidatable(wellidate, group));
+                        const validatable = wellidate.validatables.find(validatable => validatable.element == element);
+
+                        validatables.push(validatable || new WellidateValidatable(wellidate, group));
+                        validatables[validatables.length - 1].bind();
                     }
                 }
             }
+
+            wellidate.validatables = validatables;
         }
         form(...filter) {
             const wellidate = this;
@@ -457,38 +456,54 @@
             }
         }
         validate(...filter) {
-            const valid = [];
-            const invalid = [];
+            const results = {
+                isValid: true,
+                pending: [],
+                invalid: [],
+                valid: []
+            };
 
             for (const validatable of this.filterValidatables(...filter)) {
+                const rules = [];
+
                 validatable.isValid = true;
 
                 for (const method of Object.keys(validatable.rules)) {
                     const rule = validatable.rules[method];
 
-                    if (rule.isEnabled() && !rule.isValid(validatable)) {
-                        invalid.push({
-                            message: rule.formatMessage(),
-                            validatable: validatable,
-                            method: method
-                        });
+                    if (rule.isEnabled()) {
+                        const isValid = rule.isValid(validatable);
 
-                        validatable.isValid = false;
+                        if (isValid === false) {
+                            results.invalid.push({
+                                message: rule.formatMessage(),
+                                validatable: validatable,
+                                method: method
+                            });
 
-                        break;
+                            validatable.isValid = false;
+                            results.isValid = false;
+
+                            break;
+                        } else if (typeof isValid != "boolean") {
+                            rules.push({ method: method, promise: isValid });
+
+                            if (!results.pending.some(rule => rule.validatable == validatable)) {
+                                results.pending.push({
+                                    validatable: validatable,
+                                    rules: rules
+                                });
+                            }
+                        }
                     }
                 }
 
                 if (validatable.isValid) {
-                    valid.push({ validatable });
+                    results.valid.push({ validatable });
                 }
             }
 
-            return {
-                isValid: !invalid.length,
-                invalid: invalid,
-                valid: valid
-            };
+            return results;
         }
 
         reset() {
@@ -655,6 +670,7 @@
             reset() {
                 this.show({
                     isValid: true,
+                    pending: [],
                     invalid: [],
                     valid: []
                 });
@@ -981,27 +997,38 @@
                     }
 
                     clearTimeout(remote.start);
-                    remote.start = setTimeout(() => {
-                        if (validatable.isValid) {
-                            remote.controller = new AbortController();
 
-                            remote.prepare(validatable).then(response => {
-                                if (validatable.isValid && response.ok) {
-                                    return response.text();
-                                }
+                    return new Promise((resolve, reject) => {
+                        remote.start = setTimeout(() => {
+                            if (validatable.isValid) {
+                                remote.controller = new AbortController();
 
-                                return "";
-                            }).then(response => {
-                                if (response) {
-                                    remote.apply(validatable, response);
-                                }
-                            });
+                                remote.prepare(validatable).then(response => {
+                                    if (validatable.isValid && response.ok) {
+                                        return response.text();
+                                    }
 
-                            validatable.pending();
-                        }
-                    }, 1);
+                                    return "";
+                                }).then(response => {
+                                    if (response) {
+                                        resolve(remote.apply(validatable, response));
+                                    } else {
+                                        resolve(true);
+                                    }
+                                }).catch(reason => {
+                                    if (reason.name == "AbortError") {
+                                        resolve(true);
+                                    }
 
-                    return true;
+                                    reject(reason);
+                                });
+
+                                validatable.pending();
+                            } else {
+                                resolve(true);
+                            }
+                        }, 1);
+                    });
                 },
                 buildUrl() {
                     const remote = this;
