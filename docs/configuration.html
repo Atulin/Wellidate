@@ -54,6 +54,10 @@ title: Wellidate - instance configuration
         reset() {
         }
     },
+    <span class="com">// Submit handler for manual submitting after valid validation.</span>
+    submitHandler: <span class="kwd">function</span>(e) {
+        e.target.submit();
+    },
     <span class="com">// Rules to apply on elements identified by a selector.</span>
     rules: {
         <span class="str">"input"</span>: {

@@ -91,6 +91,7 @@ export interface WellidateDefaults {
 export interface WellidateOptions {
     rules: WellidateRules;
     summary: WellidateSummary;
+    submitHandler: ((e: Event) => void) | null;
 
     include: string;
     excludes: string[];
@@ -864,8 +865,8 @@ export class Wellidate implements WellidateOptions {
 
     public container: HTMLElement;
     public lastActive?: HTMLElement;
-    public submitHandler?: () => void;
     public validatables: WellidateValidatable[];
+    public submitHandler: ((e: Event) => void) | null;
 
     [option: string]: any;
 
@@ -910,6 +911,7 @@ export class Wellidate implements WellidateOptions {
         wellidate.setOption("excludes", options.excludes);
         wellidate.setOption("focusCleanup", options.focusCleanup);
         wellidate.setOption("focusInvalid", options.focusInvalid);
+        wellidate.setOption("submitHandler", options.submitHandler);
         wellidate.setOption("fieldValidClass", options.fieldValidClass);
         wellidate.setOption("fieldErrorClass", options.fieldErrorClass);
         wellidate.setOption("inputValidClass", options.inputValidClass);
@@ -1175,7 +1177,7 @@ export class Wellidate implements WellidateOptions {
                     if (wellidate.submitHandler) {
                         e.preventDefault();
 
-                        wellidate.submitHandler();
+                        wellidate.submitHandler(e);
                     }
                 } else {
                     e.preventDefault();
