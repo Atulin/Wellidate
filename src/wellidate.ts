@@ -1,5 +1,5 @@
 /*!
- * Wellidate 2.1.0
+ * Wellidate 2.2.0
  * https://github.com/NonFactors/Wellidate
  *
  * Copyright © NonFactors
@@ -27,6 +27,7 @@ export interface WellidateSummary {
     container: string;
 
     show(result: WellidateResults): void;
+    append(error: string): void;
 
     reset(): void;
 }
@@ -91,7 +92,7 @@ export interface WellidateDefaults {
 export interface WellidateOptions {
     rules: WellidateRules;
     summary: WellidateSummary;
-    submitHandler: ((e: Event) => void) | null;
+    submitHandler: ((e: Event, results: WellidateResults) => void) | null;
 
     include: string;
     excludes: string[];
@@ -138,6 +139,7 @@ export class WellidateValidatable {
     }
 
     public validate() {
+        const pending = [];
         const validatable = this;
 
         validatable.isValid = true;
@@ -145,15 +147,35 @@ export class WellidateValidatable {
         for (const method of Object.keys(validatable.rules)) {
             const rule = validatable.rules[method]!;
 
-            if (rule.isEnabled() && !rule.isValid(validatable)) {
-                validatable.isValid = false;
-                validatable.error(method);
+            if (rule.isEnabled()) {
+                const isValid = rule.isValid(validatable);
+
+                if (!isValid) {
+                    validatable.isValid = false;
+                    validatable.error(method);
+                } else if (typeof isValid != "boolean") {
+                    pending.push(isValid);
+                    validatable.pending();
+
+                    isValid.then(result => {
+                        if (validatable.isValid && !result) {
+                            validatable.isValid = false;
+                            validatable.error(method);
+                        }
+                    });
+                }
 
                 break;
             }
         }
 
-        if (validatable.isValid) {
+        if (pending.length) {
+            Promise.all(pending).then(isValid => {
+                if (validatable.isValid && isValid.every(Boolean)) {
+                    validatable.success();
+                }
+            });
+        } else if (validatable.isValid) {
             validatable.success();
         }
 
@@ -442,6 +464,34 @@ export class Wellidate implements WellidateOptions {
 
                             summary.appendChild(list);
                         }
+
+                        for (const pending of result.pending) {
+                            Promise.all(pending.rules.map(rule => rule.promise)).then(results => {
+                                const error = results.findIndex(isValid => !isValid);
+
+                                if (error >= 0) {
+                                    this.append(pending.validatable.rules[pending.rules[error].method]!.formatMessage());
+                                }
+                            });
+                        }
+                    }
+                }
+            },
+            append(error: string) {
+                if (this.container) {
+                    const summary = document.querySelector(this.container);
+
+                    if (summary) {
+                        summary.classList.add("validation-summary-errors");
+                        summary.classList.remove("validation-summary-valid");
+
+                        const list = document.createElement("ul");
+                        const item = document.createElement("li");
+
+                        item.innerHTML = error;
+                        list.appendChild(item);
+
+                        summary.appendChild(list);
                     }
                 }
             },
@@ -781,27 +831,25 @@ export class Wellidate implements WellidateOptions {
                             if (validatable.isValid) {
                                 remote.controller = new AbortController();
 
-                                remote.prepare(validatable).then((response: Response) => {
-                                    if (validatable.isValid && response.ok) {
-                                        return response.text();
-                                    }
+                                remote.prepare(validatable)
+                                    .then((response: Response) => response.ok ? response.text() : "")
+                                    .then((response: string) => {
+                                        if (response) {
+                                            const result = JSON.parse(response);
 
-                                    return "";
-                                }).then((response: string) => {
-                                    if (response) {
-                                        resolve(remote.apply(validatable, response));
-                                    } else {
-                                        resolve(true);
-                                    }
-                                }).catch((reason: any) => {
-                                    if (reason.name == "AbortError") {
-                                        resolve(true);
-                                    }
+                                            remote.message = result.message || remote.message;
 
-                                    reject(reason);
-                                });
+                                            resolve(result.isValid !== false);
+                                        } else {
+                                            resolve(true);
+                                        }
+                                    }).catch((reason: any) => {
+                                        if (reason.name == "AbortError") {
+                                            resolve(true);
+                                        }
 
-                                validatable.pending();
+                                        reject(reason);
+                                    });
                             } else {
                                 resolve(true);
                             }
@@ -829,15 +877,6 @@ export class Wellidate implements WellidateOptions {
                         signal: this.controller.signal,
                         headers: { "X-Requested-With": "XMLHttpRequest" }
                     });
-                },
-                apply(validatable: WellidateValidatable, response: string) {
-                    const result = JSON.parse(response);
-
-                    if (result.isValid === false) {
-                        validatable.error("remote", result.message);
-                    } else {
-                        validatable.success(result.message);
-                    }
                 }
             }
         }
@@ -866,7 +905,7 @@ export class Wellidate implements WellidateOptions {
     public container: HTMLElement;
     public lastActive?: HTMLElement;
     public validatables: WellidateValidatable[];
-    public submitHandler: ((e: Event) => void) | null;
+    public submitHandler: ((e: Event, results: WellidateResults) => void) | null;
 
     [option: string]: any;
 
@@ -967,36 +1006,27 @@ export class Wellidate implements WellidateOptions {
         wellidate.validatables = validatables;
     }
     public form(...filter: string[]) {
-        const wellidate = this;
-        const result = wellidate.validate(...filter);
-
-        for (const valid of result.valid) {
-            valid.validatable.success();
-        }
-
-        for (const invalid of result.invalid) {
-            invalid.validatable.error(invalid.method);
-        }
-
-        wellidate.summary.show(result);
-
-        if (wellidate.focusInvalid) {
-            wellidate.focus(result.invalid.map(invalid => invalid.validatable));
-        }
-
-        wellidate.container.classList.add(wellidate.wasValidatedClass);
-
-        return !result.invalid.length;
+        return !this.validateAndApply(...filter).invalid.length;
     }
     public isValid(...filter: string[]) {
         for (const validatable of this.filterValidatables(...filter)) {
             for (const method of Object.keys(validatable.rules)) {
                 const rule = validatable.rules[method]!;
 
-                if (rule.isEnabled() && !rule.isValid(validatable)) {
-                    validatable.isValid = false;
+                if (rule.isEnabled()) {
+                    const isValid = rule.isValid(validatable);
 
-                    return false;
+                    if (!isValid) {
+                        validatable.isValid = false;
+
+                        return false;
+                    } else if (typeof isValid != "boolean") {
+                        isValid.then(result => {
+                            if (!result) {
+                                validatable.isValid = false;
+                            }
+                        });
+                    }
                 }
             }
 
@@ -1039,7 +1069,7 @@ export class Wellidate implements WellidateOptions {
                 if (rule.isEnabled()) {
                     const isValid = rule.isValid(validatable);
 
-                    if (isValid === false) {
+                    if (!isValid) {
                         results.invalid.push({
                             message: rule.formatMessage(),
                             validatable: validatable,
@@ -1051,6 +1081,10 @@ export class Wellidate implements WellidateOptions {
 
                         break;
                     } else if (typeof isValid != "boolean") {
+                        isValid.then(result => {
+                            validatable.isValid = validatable.isValid && result;
+                        });
+
                         rules.push({ method: method, promise: isValid });
 
                         if (!results.pending.some(rule => rule.validatable == validatable)) {
@@ -1063,7 +1097,7 @@ export class Wellidate implements WellidateOptions {
                 }
             }
 
-            if (validatable.isValid) {
+            if (validatable.isValid && !rules.length) {
                 results.valid.push({ validatable });
             }
         }
@@ -1151,6 +1185,42 @@ export class Wellidate implements WellidateOptions {
 
         return false;
     }
+    private validateAndApply(...filter: string[]) {
+        const wellidate = this;
+        const results = wellidate.validate(...filter);
+
+        for (const valid of results.valid) {
+            valid.validatable.success();
+        }
+
+        for (const pending of results.pending) {
+            pending.validatable.pending();
+
+            Promise.all(pending.rules.map(rule => rule.promise)).then(results => {
+                const error = results.findIndex(isValid => !isValid);
+
+                if (error >= 0) {
+                    pending.validatable.error(pending.rules[error].method);
+                } else {
+                    pending.validatable.success();
+                }
+            });
+        }
+
+        for (const invalid of results.invalid) {
+            invalid.validatable.error(invalid.method);
+        }
+
+        wellidate.summary.show(results);
+
+        if (wellidate.focusInvalid) {
+            wellidate.focus(results.invalid.map(invalid => invalid.validatable));
+        }
+
+        wellidate.container.classList.add(wellidate.wasValidatedClass);
+
+        return results;
+    }
     private filterValidatables(...filter: string[]) {
         return this.validatables.filter(validatable => {
             for (const filterId of filter) {
@@ -1168,7 +1238,9 @@ export class Wellidate implements WellidateOptions {
 
         if (wellidate.container.tagName == "FORM") {
             wellidate.container.addEventListener("submit", function (e) {
-                if (wellidate.form()) {
+                const results = wellidate.validateAndApply();
+
+                if (!results.invalid.length) {
                     this.dispatchEvent(new CustomEvent("wellidate-valid", {
                         detail: { wellidate },
                         bubbles: true
@@ -1177,7 +1249,7 @@ export class Wellidate implements WellidateOptions {
                     if (wellidate.submitHandler) {
                         e.preventDefault();
 
-                        wellidate.submitHandler(e);
+                        wellidate.submitHandler(e, results);
                     }
                 } else {
                     e.preventDefault();

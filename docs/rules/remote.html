@@ -92,7 +92,11 @@ title: Wellidate - remote rule
                                     <span class="kwd">return</span> <span class="str">""</span>;
                                 }).then(response => {
                                     <span class="kwd">if</span> (response) {
-                                        resolve(remote.apply(validatable, response));
+                                        <span class="kwd">const</span> result = <span class="cls">JSON</span>.parse(response);
+
+                                        remote.message = result.message || remote.message;
+
+                                        resolve(result.isValid !== <span class="kwd">false</span>);
                                     } <span class="kwd">else</span> {
                                         resolve(<span class="kwd">true</span>);
                                     }
@@ -138,16 +142,6 @@ title: Wellidate - remote rule
                         signal: <span class="kwd">this</span>.controller.signal,
                         headers: { <span class="str">"X-Requested-With"</span>: <span class="str">"XMLHttpRequest"</span> }
                     });
-                },
-                <span class="com">// Optional, override remote response processing.</span>
-                apply(validatable, response) {
-                    <span class="kwd">const</span> result = <span class="cls">JSON</span>.parse(response);
-
-                    <span class="kwd">if</span> (result.isValid) {
-                        validatable.success(result.message);
-                    } <span class="kwd">else</span> {
-                        validatable.error(<span class="str">"remote"</span>, result.message);
-                    }
                 }
             }
         }

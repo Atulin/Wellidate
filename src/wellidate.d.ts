@@ -1,5 +1,5 @@
 /*!
- * Wellidate 2.1.0
+ * Wellidate 2.2.0
  * https://github.com/NonFactors/Wellidate
  *
  * Copyright © NonFactors
@@ -22,6 +22,7 @@ export interface WellidateRules {
 export interface WellidateSummary {
     container: string;
     show(result: WellidateResults): void;
+    append(error: string): void;
     reset(): void;
 }
 export interface WellidateResults {
@@ -72,6 +73,7 @@ export interface WellidateDefaults {
 export interface WellidateOptions {
     rules: WellidateRules;
     summary: WellidateSummary;
+    submitHandler: ((e: Event, results: WellidateResults) => void) | null;
     include: string;
     excludes: string[];
     focusCleanup: boolean;
@@ -123,8 +125,8 @@ export declare class Wellidate implements WellidateOptions {
     wasValidatedClass: string;
     container: HTMLElement;
     lastActive?: HTMLElement;
-    submitHandler?: () => void;
     validatables: WellidateValidatable[];
+    submitHandler: ((e: Event, results: WellidateResults) => void) | null;
     [option: string]: any;
     constructor(container: HTMLElement, options?: Partial<WellidateOptions>);
     set(options: Partial<WellidateOptions>): this;
@@ -139,6 +141,7 @@ export declare class Wellidate implements WellidateOptions {
     private buildGroupElements;
     private focus;
     private isExcluded;
+    private validateAndApply;
     private filterValidatables;
     private bind;
 }
