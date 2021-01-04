@@ -153,7 +153,7 @@ export class WellidateValidatable {
                 if (!isValid) {
                     validatable.isValid = false;
                     validatable.error(method);
-                } else if (typeof isValid != "boolean") {
+                } else if (typeof isValid !== "boolean") {
                     pending.push(isValid);
                     validatable.pending();
 
@@ -288,25 +288,25 @@ export class WellidateValidatable {
         const validatable = this;
         const wellidate = this.wellidate;
         const input = validatable.element;
-        const event = input.tagName == "SELECT" || input.type == "hidden" ? "change" : "input";
+        const event = input.tagName === "SELECT" || input.type === "hidden" ? "change" : "input";
 
-        const changeEvent = function (this: HTMLInputElement) {
-            if (this.type == "hidden" || validatable.isDirty) {
+        function changeEvent(this: HTMLInputElement) {
+            if (this.type === "hidden" || validatable.isDirty) {
                 validatable.validate();
             }
-        };
-        const blurEvent = function (this: HTMLInputElement) {
+        }
+        function blurEvent(this: HTMLInputElement) {
             if (validatable.isDirty || this.value.length) {
                 validatable.isDirty = !validatable.validate();
             }
-        };
-        const focusEvent = function (this: HTMLInputElement) {
+        }
+        function focusEvent(this: HTMLInputElement) {
             if (wellidate.focusCleanup) {
                 validatable.reset();
             }
 
             wellidate.lastActive = this;
-        };
+        }
 
         for (const element of validatable.elements) {
             element.addEventListener("blur", blurEvent);
@@ -341,7 +341,7 @@ export class WellidateValidatable {
     private buildInputRules() {
         const validatable = this;
         const rules = validatable.rules;
-        const element = validatable.element;
+        const element = validatable.element as HTMLInputElement;
         const defaultRule = Wellidate.default.rule;
         const defaultRules = Wellidate.default.rules;
 
@@ -349,7 +349,7 @@ export class WellidateValidatable {
             rules.required = Object.assign({}, defaultRule, defaultRules.required, { element });
         }
 
-        if (element.type == "email" && defaultRules.email) {
+        if (element.type === "email" && defaultRules.email) {
             rules.email = Object.assign({}, defaultRule, defaultRules.email, { element });
         }
 
@@ -536,9 +536,9 @@ export class Wellidate implements WellidateOptions {
                 const input = element || this.element;
                 let value: string = input.value;
 
-                if (input.tagName == "SELECT" && input.multiple) {
+                if (input.tagName === "SELECT" && input.multiple) {
                     return Array.from<HTMLOptionElement>(input.options).filter(option => option.selected).length.toString();
-                } else if (input.type == "radio") {
+                } else if (input.type === "radio") {
                     if (input.name) {
                         const name: string = input.name.replace(/(["\]\\])/g, "\\$1");
                         const checked = document.querySelector<HTMLInputElement>(`input[name="${name}"]:checked`);
@@ -547,7 +547,7 @@ export class Wellidate implements WellidateOptions {
                     } else {
                         value = input.checked ? value : "";
                     }
-                } else if (input.type == "file") {
+                } else if (input.type === "file") {
                     if (value.lastIndexOf("\\") >= 0) {
                         value = value.substring(value.lastIndexOf("\\") + 1);
                     } else if (value.lastIndexOf("/") >= 0) {
@@ -570,7 +570,7 @@ export class Wellidate implements WellidateOptions {
                 isValid() {
                     const other = document.getElementById(this.other);
 
-                    return other != null && this.normalizeValue() == this.normalizeValue(other);
+                    return other && this.normalizeValue() === this.normalizeValue(other);
                 }
             },
             length: {
@@ -691,7 +691,7 @@ export class Wellidate implements WellidateOptions {
                     const max = parseFloat(this.max);
                     const value = this.normalizeValue();
 
-                    return !value || (min == null || min <= value) && (value <= max || max == null);
+                    return !value || (isNaN(min) || min <= value) && (value <= max || isNaN(max));
                 },
                 formatMessage() {
                     const range = this;
@@ -754,7 +754,7 @@ export class Wellidate implements WellidateOptions {
                 isValid() {
                     const value = this.normalizeValue();
 
-                    return !value || value % parseInt(this.value) == 0;
+                    return !value || value % parseInt(this.value) === 0;
                 },
                 formatMessage() {
                     return this.message.replace("{0}", this.value);
@@ -785,14 +785,14 @@ export class Wellidate implements WellidateOptions {
 
                         for (const type of filter) {
                             if (type.startsWith(".")) {
-                                if (file.name != extension && `.${extension}` == type) {
+                                if (file.name !== extension && `.${extension}` === type) {
                                     return true;
                                 }
                             } else if (type.endsWith("/*")) {
                                 if (file.type.startsWith(type.replace(/\*$/, ""))) {
                                     return true;
                                 }
-                            } else if (file.type == type) {
+                            } else if (file.type === type) {
                                 return true;
                             }
                         }
@@ -800,7 +800,7 @@ export class Wellidate implements WellidateOptions {
                         return !filter.length;
                     });
 
-                    return this.element.files.length == correct.length;
+                    return this.element.files.length === correct.length;
                 }
             },
             regex: {
@@ -844,7 +844,7 @@ export class Wellidate implements WellidateOptions {
                                             resolve(true);
                                         }
                                     }).catch((reason: any) => {
-                                        if (reason.name == "AbortError") {
+                                        if (reason.name === "AbortError") {
                                             resolve(true);
                                         }
 
@@ -932,7 +932,7 @@ export class Wellidate implements WellidateOptions {
         wellidate.container = container;
         wellidate.validatables = [];
 
-        if (container.tagName == "FORM") {
+        if (container.tagName === "FORM") {
             (container as HTMLFormElement).noValidate = true;
         }
 
@@ -986,18 +986,18 @@ export class Wellidate implements WellidateOptions {
 
         if (wellidate.container.matches(wellidate.include)) {
             const group = wellidate.buildGroupElements(wellidate.container) as HTMLInputElement[];
-            const validatable = wellidate.validatables.find(validatable => validatable.element == group[0]);
+            const current = wellidate.validatables.find(validatable => validatable.element === group[0]);
 
-            validatables.push(validatable || new WellidateValidatable(wellidate, group));
+            validatables.push(current || new WellidateValidatable(wellidate, group));
             validatables[validatables.length - 1].bind();
         } else {
             for (const element of wellidate.container.querySelectorAll<HTMLElement>(wellidate.include)) {
                 const group = wellidate.buildGroupElements(element) as HTMLInputElement[];
 
-                if (element == group[0]) {
-                    const validatable = wellidate.validatables.find(validatable => validatable.element == element);
+                if (element === group[0]) {
+                    const current = wellidate.validatables.find(validatable => validatable.element === element);
 
-                    validatables.push(validatable || new WellidateValidatable(wellidate, group));
+                    validatables.push(current || new WellidateValidatable(wellidate, group));
                     validatables[validatables.length - 1].bind();
                 }
             }
@@ -1020,7 +1020,7 @@ export class Wellidate implements WellidateOptions {
                         validatable.isValid = false;
 
                         return false;
-                    } else if (typeof isValid != "boolean") {
+                    } else if (typeof isValid !== "boolean") {
                         isValid.then(result => {
                             if (!result) {
                                 validatable.isValid = false;
@@ -1040,11 +1040,11 @@ export class Wellidate implements WellidateOptions {
             for (const validatable of this.filterValidatables(selector)) {
                 const result = results[selector];
 
-                if (typeof result.error != "undefined") {
+                if (typeof result.error !== "undefined") {
                     validatable.error(null, result.error);
-                } else if (typeof result.success != "undefined") {
+                } else if (typeof result.success !== "undefined") {
                     validatable.success(result.success);
-                } else if (typeof result.reset != "undefined") {
+                } else if (typeof result.reset !== "undefined") {
                     validatable.reset(result.reset);
                 }
             }
@@ -1065,34 +1065,31 @@ export class Wellidate implements WellidateOptions {
 
             for (const method of Object.keys(validatable.rules)) {
                 const rule = validatable.rules[method]!;
+                const isValid = !rule.isEnabled() || rule.isValid(validatable);
 
-                if (rule.isEnabled()) {
-                    const isValid = rule.isValid(validatable);
+                if (!isValid) {
+                    results.invalid.push({
+                        message: rule.formatMessage(),
+                        validatable: validatable,
+                        method: method
+                    });
 
-                    if (!isValid) {
-                        results.invalid.push({
-                            message: rule.formatMessage(),
+                    validatable.isValid = false;
+                    results.isValid = false;
+
+                    break;
+                } else if (typeof isValid !== "boolean") {
+                    isValid.then(result => {
+                        validatable.isValid = validatable.isValid && result;
+                    });
+
+                    rules.push({ method: method, promise: isValid });
+
+                    if (!results.pending.some(pending => pending.validatable === validatable)) {
+                        results.pending.push({
                             validatable: validatable,
-                            method: method
+                            rules: rules
                         });
-
-                        validatable.isValid = false;
-                        results.isValid = false;
-
-                        break;
-                    } else if (typeof isValid != "boolean") {
-                        isValid.then(result => {
-                            validatable.isValid = validatable.isValid && result;
-                        });
-
-                        rules.push({ method: method, promise: isValid });
-
-                        if (!results.pending.some(rule => rule.validatable == validatable)) {
-                            results.pending.push({
-                                validatable: validatable,
-                                rules: rules
-                            });
-                        }
                     }
                 }
             }
@@ -1121,7 +1118,7 @@ export class Wellidate implements WellidateOptions {
 
         for (const arg of args) {
             for (const key of Object.keys(arg)) {
-                if (Object.prototype.toString.call(options[key]) == "[object Object]") {
+                if (Object.prototype.toString.call(options[key]) === "[object Object]") {
                     options[key] = this.extend(options[key], arg[key]);
                 } else {
                     options[key] = arg[key];
@@ -1134,8 +1131,8 @@ export class Wellidate implements WellidateOptions {
     private setOption(option: string, value: any) {
         const wellidate = this;
 
-        if (typeof value != "undefined") {
-            if (Object.prototype.toString.call(value) == "[object Object]") {
+        if (typeof value !== "undefined") {
+            if (Object.prototype.toString.call(value) === "[object Object]") {
                 wellidate[option] = wellidate.extend(wellidate[option], value);
             } else {
                 wellidate[option] = value;
@@ -1158,11 +1155,11 @@ export class Wellidate implements WellidateOptions {
             let invalid = errors[0];
 
             for (let i = 1; i < errors.length; i++) {
-                if (this.lastActive == errors[i].element) {
+                if (this.lastActive === errors[i].element) {
                     invalid = errors[i];
 
                     break;
-                } else if (invalid.element.compareDocumentPosition(errors[i].element) == 2) {
+                } else if (invalid.element.compareDocumentPosition(errors[i].element) === 2) {
                     invalid = errors[i];
                 }
             }
@@ -1196,8 +1193,8 @@ export class Wellidate implements WellidateOptions {
         for (const pending of results.pending) {
             pending.validatable.pending();
 
-            Promise.all(pending.rules.map(rule => rule.promise)).then(results => {
-                const error = results.findIndex(isValid => !isValid);
+            Promise.all(pending.rules.map(rule => rule.promise)).then(promises => {
+                const error = promises.findIndex(isValid => !isValid);
 
                 if (error >= 0) {
                     pending.validatable.error(pending.rules[error].method);
@@ -1236,11 +1233,18 @@ export class Wellidate implements WellidateOptions {
     private bind() {
         const wellidate = this;
 
-        if (wellidate.container.tagName == "FORM") {
+        if (wellidate.container.tagName === "FORM") {
             wellidate.container.addEventListener("submit", function (e) {
                 const results = wellidate.validateAndApply();
 
-                if (!results.invalid.length) {
+                if (results.invalid.length) {
+                    e.preventDefault();
+
+                    this.dispatchEvent(new CustomEvent("wellidate-invalid", {
+                        detail: { wellidate },
+                        bubbles: true
+                    }));
+                } else {
                     this.dispatchEvent(new CustomEvent("wellidate-valid", {
                         detail: { wellidate },
                         bubbles: true
@@ -1251,13 +1255,6 @@ export class Wellidate implements WellidateOptions {
 
                         wellidate.submitHandler(e, results);
                     }
-                } else {
-                    e.preventDefault();
-
-                    this.dispatchEvent(new CustomEvent("wellidate-invalid", {
-                        detail: { wellidate },
-                        bubbles: true
-                    }));
                 }
             });
 

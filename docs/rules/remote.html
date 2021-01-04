@@ -84,31 +84,25 @@ title: Wellidate - remote rule
                             <span class="kwd">if</span> (validatable.isValid) {
                                 remote.controller = <span class="kwd">new</span> <span class="cls">AbortController</span>();
 
-                                remote.prepare(validatable).then(response => {
-                                    <span class="kwd">if</span> (validatable.isValid && response.ok) {
-                                        <span class="kwd">return</span> response.text();
-                                    }
+                                remote.prepare(validatable)
+                                    .then(response => response.ok ? response.text() : <span class="str">""</span>)
+                                    .then(response => {
+                                        <span class="kwd">if</span> (response) {
+                                            <span class="kwd">const</span> result = <span class="cls">JSON</span>.parse(response);
 
-                                    <span class="kwd">return</span> <span class="str">""</span>;
-                                }).then(response => {
-                                    <span class="kwd">if</span> (response) {
-                                        <span class="kwd">const</span> result = <span class="cls">JSON</span>.parse(response);
+                                            remote.message = result.message || remote.message;
 
-                                        remote.message = result.message || remote.message;
+                                            resolve(result.isValid !== <span class="kwd">false</span>);
+                                        } <span class="kwd">else</span> {
+                                            resolve(<span class="kwd">true</span>);
+                                        }
+                                    }).catch(reason => {
+                                        <span class="kwd">if</span> (reason.name === <span class="str">"AbortError"</span>) {
+                                            resolve(<span class="kwd">true</span>);
+                                        }
 
-                                        resolve(result.isValid !== <span class="kwd">false</span>);
-                                    } <span class="kwd">else</span> {
-                                        resolve(<span class="kwd">true</span>);
-                                    }
-                                }).catch(reason => {
-                                    <span class="kwd">if</span> (reason.name == <span class="str">"AbortError"</span>) {
-                                        resolve(<span class="kwd">true</span>);
-                                    }
-
-                                    reject(reason);
-                                });
-
-                                validatable.pending();
+                                        reject(reason);
+                                    });
                             } <span class="kwd">else</span> {
                                 resolve(<span class="kwd">true</span>);
                             }
